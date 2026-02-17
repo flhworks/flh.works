@@ -1,64 +1,173 @@
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<title>HISAIDO 投資家限定ページ</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>HISAIDO｜投資家限定（J-KISS）</title>
 <style>
-body {font-family: Arial, sans-serif; margin:40px; line-height:1.8; color:#111;}
-h1, h2 {color:#111;}
-.section {margin-bottom:50px;}
-.highlight {color:#c40000; font-weight:bold;}
-.footer {margin-top:60px; font-size:14px; color:#555;}
+  :root {
+    --text:#111;
+    --muted:#555;
+    --bg:#ffffff;
+    --card:#f7f7f7;
+    --accent:#c40000;
+    --line:#e5e5e5;
+  }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; margin:0; color:var(--text); background:var(--bg); line-height:1.8; }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 32px 18px 120px; }
+  h1 { font-size: 28px; margin: 0 0 6px; }
+  h2 { font-size: 20px; margin: 28px 0 10px; }
+  p { margin: 10px 0; }
+  .kicker { color:var(--muted); font-size: 14px; }
+  .hero { padding: 22px; border:1px solid var(--line); border-radius:14px; background: #fff; }
+  .stats { display:flex; gap:12px; flex-wrap:wrap; margin-top:14px; }
+  .stat { flex:1 1 180px; background:var(--card); border:1px solid var(--line); border-radius:12px; padding:14px; }
+  .stat .v { font-size: 22px; font-weight: 800; color:var(--accent); }
+  .stat .l { font-size: 13px; color:var(--muted); }
+  .badge { display:inline-block; padding:6px 10px; border-radius:999px; background:#fff1f1; border:1px solid #ffd0d0; color:var(--accent); font-weight:700; font-size:13px; }
+  ul { margin: 8px 0 0 18px; }
+  .grid { display:grid; grid-template-columns: 1fr; gap: 12px; }
+  @media (min-width: 760px) { .grid { grid-template-columns: 1fr 1fr; } }
+  .card { background:#fff; border:1px solid var(--line); border-radius:14px; padding:16px; }
+  .callout { background:#fff; border:2px solid var(--accent); border-radius:14px; padding:16px; }
+  .btn { display:inline-block; text-decoration:none; background:var(--accent); color:#fff; padding:14px 16px; border-radius:12px; font-weight:800; }
+  .btn:active { transform: translateY(1px); }
+  .btn2 { display:inline-block; text-decoration:none; background:#111; color:#fff; padding:12px 14px; border-radius:12px; font-weight:800; }
+  .small { font-size: 13px; color: var(--muted); }
+  .foot { margin-top: 34px; padding-top: 18px; border-top: 1px solid var(--line); color: var(--muted); font-size: 13px; }
+  .sticky {
+    position: fixed; left:0; right:0; bottom:0;
+    background: rgba(255,255,255,0.92);
+    border-top:1px solid var(--line);
+    backdrop-filter: blur(8px);
+  }
+  .sticky .inner { max-width: 980px; margin:0 auto; padding: 12px 18px; display:flex; gap:12px; align-items:center; justify-content:space-between; flex-wrap:wrap; }
+  .sticky .inner .left { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+  .sticky .inner .left .badge { margin:0; }
+  .sticky .inner .right { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+  .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; }
+  .hr { height:1px; background:var(--line); margin: 18px 0; }
 </style>
 </head>
 <body>
+  <div class="wrap">
+    <div class="hero">
+      <div class="kicker">株式会社F.L.H｜投資家限定（面談なし・オンライン完結）</div>
+      <h1>HISAIDO｜家財特化 地震保険支援事業</h1>
+      <div class="badge">30日限定募集｜1口 1,000万円（J-KISS）</div>
 
-<h1>HISAIDO - 家財特化 地震保険支援事業</h1>
+      <div class="stats">
+        <div class="stat">
+          <div class="v">2,680回</div>
+          <div class="l">震度4以上の発生回数（2000年〜現在）</div>
+        </div>
+        <div class="stat">
+          <div class="v">約99回/年</div>
+          <div class="l">年平均（上記データの集計結果）</div>
+        </div>
+        <div class="stat">
+          <div class="v">家財特化</div>
+          <div class="l">申請“見落とし”を狙う未開拓領域</div>
+        </div>
+      </div>
 
-<div class="section">
-<h2>市場の現実</h2>
-<p>2000年〜現在までに震度4以上の地震は <span class="highlight">2,680回</span> 発生。</p>
-<p>年平均 約 <span class="highlight">99回</span>。</p>
-<p>地震は偶発ではなく、構造的に発生し続けています。</p>
-<p style="font-size:14px;color:#555;">※気象庁公表データ（2000年〜）に基づく集計</p>
-</div>
+      <p class="small">※気象庁公表データ（2000年〜）に基づく集計（震度4以上）。</p>
 
-<div class="section">
-<h2>市場の歪み</h2>
-<ul>
-<li>建物申請は広く認知</li>
-<li>家財申請は見落とされがち</li>
-<li>未申請層が存在</li>
-</ul>
-</div>
+      <div style="margin-top:16px; display:flex; gap:10px; flex-wrap:wrap;">
+        <a class="btn" href="https://forms.gle/jRopW4KVPrfAVfrW6" target="_blank" rel="noopener">投資申請フォームへ（最短1分）</a>
+        <a class="btn2" href="#terms">投資条件を見る</a>
+      </div>
+    </div>
 
-<div class="section">
-<h2>ビジネスモデル</h2>
-<ul>
-<li>完全成功報酬25%</li>
-<li>オンライン完結</li>
-<li>固定費極小AIモデル</li>
-<li>震災年に爆発的収益</li>
-</ul>
-</div>
+    <h2>市場の歪み（なぜ勝てるか）</h2>
+    <div class="grid">
+      <div class="card">
+        <b>建物は申請されるが、家財は見落とされる</b>
+        <ul>
+          <li>建物の損害は認知されやすい</li>
+          <li>家財は「申請できる」認知が弱い</li>
+          <li>結果として未申請層が残る</li>
+        </ul>
+      </div>
+      <div class="card">
+        <b>オンライン完結 × AIで“固定費を極小化”</b>
+        <ul>
+          <li>面談・電話なし（完全オンライン）</li>
+          <li>書類整理・構成最適化をAI中心で実行</li>
+          <li>イベント依存でも耐久できる体制</li>
+        </ul>
+      </div>
+    </div>
 
-<div class="section">
-<h2>法令遵守方針</h2>
-<ul>
-<li>弁護士法に抵触する交渉行為は行いません</li>
-<li>保険会社との代理交渉は行いません</li>
-<li>書類整理および申請支援のみ実施</li>
-<li>成功報酬契約に基づく透明運営</li>
-</ul>
-</div>
+    <h2>ビジネスモデル</h2>
+    <div class="card">
+      <ul>
+        <li><b>完全成功報酬：25%</b></li>
+        <li>オンライン完結（依頼〜契約〜支払いまで）</li>
+        <li>固定費極小（AI中心運用）</li>
+        <li>震災時にスケール（需要急増局面で拡張）</li>
+      </ul>
+    </div>
 
-<div class="footer">
-<p><strong>運営会社</strong><br>
-株式会社F.L.H<br>
-宮城県多賀城市<br>
-代表取締役 本郷浩之</p>
-</div>
+    <h2 id="terms">投資条件（J-KISS）</h2>
+    <div class="callout">
+      <ul>
+        <li><b>1口：</b>1,000万円</li>
+        <li><b>募集上限：</b>1億円（最大10口）</li>
+        <li><b>募集期間：</b>30日限定（期限到来または上限到達で終了）</li>
+        <li><b>契約形態：</b>J-KISS（将来株式への転換型）</li>
+        <li><b>面談：</b>実施しない（オンライン完結）</li>
+        <li><b>条件：</b>全投資家共通</li>
+      </ul>
+      <div class="hr"></div>
+      <p class="small">
+        ※重要：本投資は元本保証ではありません。J-KISSの性質上、将来株式への転換条件や流動性制限があります。<br>
+        詳細条件は、申請後に電子契約書（J-KISS）および関連書面にてご確認いただきます。
+      </p>
+      <div style="margin-top:12px;">
+        <a class="btn" href="https://forms.gle/jRopW4KVPrfAVfrW6" target="_blank" rel="noopener">投資申請フォームへ進む</a>
+      </div>
+    </div>
 
+    <h2>リスク開示（先に明確化）</h2>
+    <div class="card">
+      <ul>
+        <li>元本保証なし</li>
+        <li>地震の発生頻度・規模により売上は変動</li>
+        <li>流動性制限（短期換金が難しい）</li>
+        <li>将来株式への転換型（条件は契約書に準拠）</li>
+      </ul>
+    </div>
+
+    <h2>法令遵守方針</h2>
+    <div class="card">
+      <ul>
+        <li>弁護士法に抵触する交渉行為は行いません</li>
+        <li>保険会社との代理交渉は行いません</li>
+        <li>書類整理および申請支援のみ実施</li>
+        <li>契約に基づく透明運営</li>
+      </ul>
+    </div>
+
+    <div class="foot">
+      <b>運営会社</b><br>
+      株式会社F.L.H<br>
+      宮城県多賀城市<br>
+      代表取締役 本郷浩之<br><br>
+      本ページ：https://flhworks.github.io/flh.works/
+    </div>
+  </div>
+
+  <div class="sticky" aria-hidden="false">
+    <div class="inner">
+      <div class="left">
+        <span class="badge">30日限定｜1口1,000万円｜上限1億円</span>
+        <span class="small">面談なし・オンライン完結</span>
+      </div>
+      <div class="right">
+        <a class="btn" href="https://forms.gle/jRopW4KVPrfAVfrW6" target="_blank" rel="noopener">投資申請フォーム</a>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
