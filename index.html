@@ -14,25 +14,37 @@
     --line:#e5e5e5;
   }
   body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; margin:0; color:var(--text); background:var(--bg); line-height:1.8; }
-  .wrap { max-width: 980px; margin: 0 auto; padding: 32px 18px 120px; }
-  h1 { font-size: 28px; margin: 0 0 6px; }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 28px 18px 120px; }
+  h1 { font-size: 30px; margin: 0 0 8px; letter-spacing: .2px; }
   h2 { font-size: 20px; margin: 28px 0 10px; }
   p { margin: 10px 0; }
   .kicker { color:var(--muted); font-size: 14px; }
-  .hero { padding: 22px; border:1px solid var(--line); border-radius:14px; background: #fff; }
+  .hero {
+    padding: 22px;
+    border:1px solid var(--line);
+    border-radius:16px;
+    background: linear-gradient(180deg, #ffffff 0%, #fff6f6 100%);
+  }
+  .headline {
+    font-size: 18px;
+    margin: 6px 0 12px;
+    color:#111;
+    font-weight: 800;
+  }
+  .sub { color:var(--muted); font-size: 14px; }
   .stats { display:flex; gap:12px; flex-wrap:wrap; margin-top:14px; }
-  .stat { flex:1 1 180px; background:var(--card); border:1px solid var(--line); border-radius:12px; padding:14px; }
-  .stat .v { font-size: 22px; font-weight: 800; color:var(--accent); }
+  .stat { flex:1 1 190px; background:#fff; border:1px solid var(--line); border-radius:14px; padding:14px; }
+  .stat .v { font-size: 24px; font-weight: 900; color:var(--accent); }
   .stat .l { font-size: 13px; color:var(--muted); }
-  .badge { display:inline-block; padding:6px 10px; border-radius:999px; background:#fff1f1; border:1px solid #ffd0d0; color:var(--accent); font-weight:700; font-size:13px; }
+  .badge { display:inline-block; padding:6px 10px; border-radius:999px; background:#fff; border:1px solid #ffd0d0; color:var(--accent); font-weight:800; font-size:13px; }
   ul { margin: 8px 0 0 18px; }
   .grid { display:grid; grid-template-columns: 1fr; gap: 12px; }
   @media (min-width: 760px) { .grid { grid-template-columns: 1fr 1fr; } }
-  .card { background:#fff; border:1px solid var(--line); border-radius:14px; padding:16px; }
-  .callout { background:#fff; border:2px solid var(--accent); border-radius:14px; padding:16px; }
-  .btn { display:inline-block; text-decoration:none; background:var(--accent); color:#fff; padding:14px 16px; border-radius:12px; font-weight:800; }
+  .card { background:#fff; border:1px solid var(--line); border-radius:16px; padding:16px; }
+  .callout { background:#fff; border:2px solid var(--accent); border-radius:16px; padding:16px; }
+  .btn { display:inline-block; text-decoration:none; background:var(--accent); color:#fff; padding:14px 16px; border-radius:14px; font-weight:900; }
   .btn:active { transform: translateY(1px); }
-  .btn2 { display:inline-block; text-decoration:none; background:#111; color:#fff; padding:12px 14px; border-radius:12px; font-weight:800; }
+  .btn2 { display:inline-block; text-decoration:none; background:#111; color:#fff; padding:12px 14px; border-radius:14px; font-weight:900; }
   .small { font-size: 13px; color: var(--muted); }
   .foot { margin-top: 34px; padding-top: 18px; border-top: 1px solid var(--line); color: var(--muted); font-size: 13px; }
   .sticky {
@@ -43,7 +55,6 @@
   }
   .sticky .inner { max-width: 980px; margin:0 auto; padding: 12px 18px; display:flex; gap:12px; align-items:center; justify-content:space-between; flex-wrap:wrap; }
   .sticky .inner .left { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
-  .sticky .inner .left .badge { margin:0; }
   .sticky .inner .right { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
   .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; }
   .hr { height:1px; background:var(--line); margin: 18px 0; }
@@ -53,8 +64,13 @@
   <div class="wrap">
     <div class="hero">
       <div class="kicker">株式会社F.L.H｜投資家限定（面談なし・オンライン完結）</div>
-      <h1>HISAIDO｜家財特化 地震保険支援事業</h1>
-      <div class="badge">30日限定募集｜1口 1,000万円（J-KISS）</div>
+      <h1>HISAIDO｜家財特化 地震保険支援</h1>
+      <div class="headline">地震は「たまに」ではない。<br>震度4以上は <span style="color:var(--accent)">年平均 約99回</span> 発生。</div>
+
+      <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+        <span class="badge">30日限定募集｜1口 1,000万円（J-KISS）</span>
+        <span class="sub">募集開始：2026/02/18／締切：2026/03/20（JST）｜残り <b id="daysLeft">--</b> 日</span>
+      </div>
 
       <div class="stats">
         <div class="stat">
@@ -73,10 +89,11 @@
 
       <p class="small">※気象庁公表データ（2000年〜）に基づく集計（震度4以上）。</p>
 
-      <div style="margin-top:16px; display:flex; gap:10px; flex-wrap:wrap;">
+      <div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap;">
         <a class="btn" href="https://forms.gle/jRopW4KVPrfAVfrW6" target="_blank" rel="noopener">投資申請フォームへ（最短1分）</a>
         <a class="btn2" href="#terms">投資条件を見る</a>
       </div>
+      <p class="small">※投資家向け資料（PDF）は申請後に個別開示します。</p>
     </div>
 
     <h2>市場の歪み（なぜ勝てるか）</h2>
@@ -99,14 +116,14 @@
       </div>
     </div>
 
-    <h2>ビジネスモデル</h2>
+    <h2>収益モデル（イメージ）</h2>
     <div class="card">
+      <p><b>重要：</b>以下は「説明用の仮説モデル」です。実際の収益・投資リターンを保証するものではありません。</p>
       <ul>
-        <li><b>完全成功報酬：25%</b></li>
-        <li>オンライン完結（依頼〜契約〜支払いまで）</li>
-        <li>固定費極小（AI中心運用）</li>
-        <li>震災時にスケール（需要急増局面で拡張）</li>
+        <li><b>通常年：</b>案件少〜中（固定費を抑えつつ運用）</li>
+        <li><b>震災年：</b>需要急増（短期で受注・処理体制を拡張）</li>
       </ul>
+      <p class="small">※HISAIDOは「固定費極小＋震災時スケール」を前提に設計したブラックスワン型モデルです。</p>
     </div>
 
     <h2 id="terms">投資条件（J-KISS）</h2>
@@ -161,7 +178,7 @@
   <div class="sticky" aria-hidden="false">
     <div class="inner">
       <div class="left">
-        <span class="badge">30日限定｜1口1,000万円｜上限1億円</span>
+        <span class="badge">残り <span id="daysLeft2">--</span> 日｜1口1,000万円｜上限1億円</span>
         <span class="small">面談なし・オンライン完結</span>
       </div>
       <div class="right">
@@ -169,5 +186,22 @@
       </div>
     </div>
   </div>
+
+<script>
+(function(){
+  // Countdown (JST) - fixed dates
+  var start = new Date("2026-02-18T00:00:00+09:00");
+  var end = new Date("2026-03-20T23:59:59+09:00");
+  var now = new Date();
+  // Convert "now" to JST by adding offset difference
+  // We'll approximate by using local time; for Japan viewers it's fine. For others, still close enough.
+  var msLeft = end.getTime() - now.getTime();
+  var days = Math.ceil(msLeft / (1000*60*60*24));
+  if (days < 0) days = 0;
+  document.getElementById("daysLeft").textContent = days;
+  document.getElementById("daysLeft2").textContent = days;
+})();
+</script>
+
 </body>
 </html>
