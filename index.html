@@ -56,7 +56,6 @@
   .sticky .inner { max-width: 980px; margin:0 auto; padding: 12px 18px; display:flex; gap:12px; align-items:center; justify-content:space-between; flex-wrap:wrap; }
   .sticky .inner .left { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
   .sticky .inner .right { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
-  .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; }
   .hr { height:1px; background:var(--line); margin: 18px 0; }
 </style>
 </head>
@@ -69,7 +68,7 @@
 
       <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
         <span class="badge">30日限定募集｜1口 1,000万円（J-KISS）</span>
-        <span class="sub">募集開始：2026/02/18／締切：2026/03/20（JST）｜残り <b id="daysLeft">--</b> 日</span>
+        <span class="sub">募集開始：2026/02/18／締切：2026/03/20（JST）</span>
       </div>
 
       <div class="stats">
@@ -178,7 +177,7 @@
   <div class="sticky" aria-hidden="false">
     <div class="inner">
       <div class="left">
-        <span class="badge">残り <span id="daysLeft2">--</span> 日｜1口1,000万円｜上限1億円</span>
+        <span class="badge">30日限定｜1口1,000万円｜上限1億円</span>
         <span class="small">面談なし・オンライン完結</span>
       </div>
       <div class="right">
@@ -186,22 +185,5 @@
       </div>
     </div>
   </div>
-
-<script>
-(function(){
-  // Countdown (JST) - fixed dates
-  var start = new Date("2026-02-18T00:00:00+09:00");
-  var end = new Date("2026-03-20T23:59:59+09:00");
-  var now = new Date();
-  // Convert "now" to JST by adding offset difference
-  // We'll approximate by using local time; for Japan viewers it's fine. For others, still close enough.
-  var msLeft = end.getTime() - now.getTime();
-  var days = Math.ceil(msLeft / (1000*60*60*24));
-  if (days < 0) days = 0;
-  document.getElementById("daysLeft").textContent = days;
-  document.getElementById("daysLeft2").textContent = days;
-})();
-</script>
-
 </body>
 </html>
