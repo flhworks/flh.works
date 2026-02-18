@@ -1,169 +1,292 @@
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<title>HISAIDO 投資家ページ</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>
-body{
-    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
-    margin:0;
-    background:#f8f8f8;
-    color:#222;
-    line-height:1.7;
-}
-section{
-    padding:60px 20px;
-    max-width:900px;
-    margin:auto;
-}
-h1,h2,h3{
-    margin-bottom:20px;
-}
-.hero{
-    background:#111;
-    color:#fff;
-    text-align:center;
-    padding:100px 20px;
-}
-.hero h1{
-    font-size:32px;
-}
-.box{
-    background:#fff;
-    padding:30px;
-    border-radius:8px;
-    box-shadow:0 4px 12px rgba(0,0,0,0.05);
-    margin-bottom:30px;
-}
-.highlight{
-    color:#c0392b;
-    font-weight:bold;
-}
-.button{
-    display:inline-block;
-    background:#111;
-    color:#fff;
-    padding:15px 25px;
-    text-decoration:none;
-    border-radius:5px;
-    margin:10px;
-}
-.secondary{
-    background:#444;
-}
-.footer{
-    background:#111;
-    color:#fff;
-    text-align:center;
-    padding:40px 20px;
-}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HISAIDO 投資家向け</title>
+  <style>
+    :root{
+      --bg0:#07080a;
+      --bg1:#0c0f14;
+      --card:rgba(255,255,255,.06);
+      --border:rgba(255,255,255,.10);
+      --text:rgba(255,255,255,.92);
+      --muted:rgba(255,255,255,.68);
+      --muted2:rgba(255,255,255,.55);
+      --accent:#7aa7ff;
+      --accent2:#a7c6ff;
+      --danger:#ffb3b3;
+      --shadow:0 16px 44px rgba(0,0,0,.45);
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Helvetica Neue", Arial, sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 700px at 20% 0%, rgba(122,167,255,.22), transparent 60%),
+        radial-gradient(900px 520px at 80% 10%, rgba(167,198,255,.14), transparent 55%),
+        linear-gradient(180deg, var(--bg0), var(--bg1) 55%, #07090d);
+      min-height:100vh;
+      overflow-x:hidden;
+    }
+    a{color:inherit}
+    .wrap{max-width:1100px;margin:0 auto;padding:0 20px}
+    .topbar{
+      position:sticky;top:0;z-index:50;
+      backdrop-filter: blur(10px);
+      background:rgba(7,8,10,.55);
+      border-bottom:1px solid rgba(255,255,255,.06);
+    }
+    .topbar-inner{display:flex;align-items:center;justify-content:space-between;padding:14px 0;gap:12px}
+    .brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.4px}
+    .brand .dot{width:10px;height:10px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#ffffff)}
+    .nav{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+    .pill{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:10px 14px;border-radius:999px;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.08);
+      text-decoration:none;
+      transition:.18s transform,.18s background,.18s border;
+      font-size:14px;
+      white-space:nowrap;
+    }
+    .pill:hover{transform:translateY(-1px);background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.12)}
+    .pill.primary{
+      background:linear-gradient(135deg, rgba(122,167,255,.95), rgba(167,198,255,.88));
+      color:#06101f;border-color:transparent;
+      font-weight:700;
+    }
+    .pill.primary:hover{filter:saturate(1.05);transform:translateY(-1px)}
+    .hero{padding:70px 0 28px}
+    .kicker{color:var(--muted2);font-size:13px;letter-spacing:.5px}
+    .hero-grid{display:grid;grid-template-columns:1.3fr .9fr;gap:22px;align-items:start;margin-top:14px}
+    @media (max-width:900px){.hero-grid{grid-template-columns:1fr}}
+    h1{
+      margin:10px 0 14px;
+      font-size:42px;line-height:1.12;
+      letter-spacing:-.4px;
+    }
+    @media (max-width:520px){h1{font-size:32px}}
+    .lead{color:var(--muted);font-size:16px;line-height:1.7;margin:0 0 18px}
+    .cta-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px}
+    .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    @media (max-width:650px){.cards{grid-template-columns:1fr}}
+    .card{
+      background:linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.05));
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:var(--radius);
+      padding:16px 16px 15px;
+      box-shadow: var(--shadow);
+    }
+    .card .label{color:var(--muted2);font-size:12px}
+    .card .value{margin-top:6px;font-size:22px;font-weight:800;letter-spacing:.2px}
+    .card .sub{margin-top:6px;color:var(--muted);font-size:13px;line-height:1.55}
+    .section{padding:26px 0}
+    .section h2{margin:0 0 12px;font-size:18px;letter-spacing:.2px}
+    .panel{
+      background:rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.09);
+      border-radius:var(--radius);
+      padding:18px 18px 16px;
+    }
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    @media (max-width:900px){.grid2{grid-template-columns:1fr}}
+    ul{margin:10px 0 0 18px;color:var(--muted);line-height:1.75}
+    .note{color:var(--muted2);font-size:12.5px;line-height:1.7;margin-top:10px}
+    .tagrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+    .tag{display:inline-flex;align-items:center;padding:6px 10px;border-radius:999px;
+      background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.10);color:var(--muted);font-size:12px}
+    .divider{height:1px;background:rgba(255,255,255,.07);margin:20px 0}
+    .footer{
+      padding:26px 0 34px;
+      color:rgba(255,255,255,.62);
+      font-size:12.5px;
+      border-top:1px solid rgba(255,255,255,.07);
+      margin-top:26px;
+    }
+    .danger{color:var(--danger)}
+    .mini{
+      font-size:13px;color:var(--muted);
+      background:rgba(0,0,0,.18);
+      border:1px solid rgba(255,255,255,.08);
+      padding:10px 12px;border-radius:12px;
+    }
+  </style>
 </head>
 
 <body>
-
-<div class="hero">
-    <h1>ブラックスワンを収益化する</h1>
-    <p>震度4以上発生時に機能する、非連動型モデル</p>
-
-    <div>
-        <a href="https://docs.google.com/forms/d/e/1FAIpQLSd_AiwlEUAME2zixqUmBf0otCLqDfRnFQq2IDeOChX-8xHo9w/viewform" class="button">
-            出資申請へ
-        </a>
-
-        <a href="HISAIDO_IR.pdf" target="_blank" class="button secondary">
-            IR資料（PDF）
-        </a>
+  <div class="topbar">
+    <div class="wrap topbar-inner">
+      <div class="brand"><span class="dot"></span><span>HISAIDO</span><span style="color:var(--muted2);font-weight:600;">投資家向け</span></div>
+      <div class="nav">
+        <a class="pill" href="#about">概要</a>
+        <a class="pill" href="#model">収益モデル</a>
+        <a class="pill" href="#terms">投資条件</a>
+        <a class="pill" href="#risk">リスク</a>
+        <a class="pill" href="./HISAIDO_IR.pdf" target="_blank" rel="noopener">IR資料（PDF）</a>
+        <a class="pill primary" href="https://docs.google.com/forms/d/e/1FAIpQLSd_AiwlEUAME2zixqUmBf0otCLqDfRnFQq2IDeOChX-8xHo9w/viewform" target="_blank" rel="noopener">出資申請へ</a>
+      </div>
     </div>
-</div>
+  </div>
 
-<section>
+  <div class="wrap hero" id="top">
+    <div class="kicker">家財特化・地震保険支援 × 震度トリガー</div>
+    <div class="hero-grid">
+      <div>
+        <h1>年平均 約99回の震度4+が<br/>自然に発生するリード源</h1>
+        <p class="lead">
+          HISAIDOは「家財」に特化し、被害の整理〜レポート化までを標準化して支援するモデルです。収益は成功報酬25%（完全成功報酬）。
+          面談・電話は行わず、オンライン完結で進行します。
+        </p>
+
+        <div class="cta-row">
+          <a class="pill primary" href="https://docs.google.com/forms/d/e/1FAIpQLSd_AiwlEUAME2zixqUmBf0otCLqDfRnFQq2IDeOChX-8xHo9w/viewform" target="_blank" rel="noopener">出資申請へ</a>
+          <a class="pill" href="./HISAIDO_IR.pdf" target="_blank" rel="noopener">IR資料（PDF）</a>
+          <a class="pill" href="#terms">条件を見る</a>
+        </div>
+
+        <div class="tagrow">
+          <span class="tag">成功報酬 25%</span>
+          <span class="tag">震度4+トリガー</span>
+          <span class="tag">オンライン完結</span>
+          <span class="tag">30日限定</span>
+          <span class="tag">最大10口</span>
+        </div>
+
+        <div class="divider"></div>
+        <div class="mini">
+          <strong>募集：</strong> 1名1,000万円（固定） / 最大10名（総額1億円） / 30日限定
+        </div>
+      </div>
+
+      <div class="cards">
+        <div class="card">
+          <div class="label">震度4以上（2000〜現在の集計）</div>
+          <div class="value">年平均 約99回</div>
+          <div class="sub">「待ちビジネス」ではなく、トリガー型の獲得設計。</div>
+        </div>
+        <div class="card">
+          <div class="label">収益モデル</div>
+          <div class="value">成功報酬 25%</div>
+          <div class="sub">成果が出た案件のみ課金（完全成功報酬）。</div>
+        </div>
+        <div class="card">
+          <div class="label">募集</div>
+          <div class="value">30日限定</div>
+          <div class="sub">最大10口。満額到達で終了。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap section" id="about">
     <h2>■ 事業概要</h2>
-    <div class="box">
-        HISAIDOは、地震保険（家財）申請支援を自動化するシステムです。<br>
-        震度4以上をトリガーとした成功報酬型モデルで収益を構築しています。
+    <div class="panel">
+      <p class="lead" style="margin:0">
+        地震保険（家財）申請において、<strong>被害情報の整理・証拠の揃え方・レポート化</strong>までを標準化し、申請支援を自動化する仕組みです。<br/>
+        震度4以上をトリガーに「需要が自然発生」する点が特徴です。
+      </p>
+      <div class="grid2" style="margin-top:12px">
+        <div class="mini">
+          <strong>提供価値</strong><br/>
+          ・顧客の手間を削減（入力→整理→レポート）<br/>
+          ・漏れ/不備を減らし、進行を安定化
+        </div>
+        <div class="mini">
+          <strong>運営</strong><br/>
+          運営主体：株式会社F.L.H<br/>
+          お問い合わせ：invest@flh.works
+        </div>
+      </div>
     </div>
-</section>
+  </div>
 
-<section>
-    <h2>■ 収益モデル</h2>
-    <div class="box">
-        ・成功報酬：25%<br>
-        ・震度4以上：年平均 約99回<br>
-        ・ブラックスワン非連動型収益モデル
+  <div class="wrap section" id="model">
+    <h2>■ 市場トリガー / 収益モデル</h2>
+    <div class="grid2">
+      <div class="panel">
+        <strong>市場トリガー</strong>
+        <ul>
+          <li>震度4以上は発生頻度が高く、発生後に即座に動ける仕組みがあれば「待ち」ではなく「トリガー型」で獲得可能。</li>
+          <li>家財は申請が後回しになりやすく、未開拓領域が大きい。</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <strong>収益モデル（シンプル）</strong>
+        <ul>
+          <li>成功報酬：25%</li>
+          <li>平均保険金 120万円・成功報酬25%（30万円/件）を前提としたモデル例をIRに記載</li>
+        </ul>
+        <div class="note">※数字の詳細は「IR資料（PDF）」を参照してください。</div>
+      </div>
     </div>
-</section>
+  </div>
 
-<section>
-    <h2>■ 投資条件</h2>
-    <div class="box">
-        <strong>出資単位：</strong>1口 1,000万円（固定）<br>
-        <strong>募集上限：</strong>最大10口（総額1億円）<br>
-        <strong>募集期間：</strong>公開から30日間<br><br>
-
-        <strong>想定スキーム：</strong>将来株式転換型（J-KISS予定）<br>
-        ・ディスカウント率：20%想定<br>
-        ・転換イベント：次回資金調達<br><br>
-
-        <strong>資金使途：</strong><br>
-        ・システム拡張<br>
-        ・マーケティング<br>
-        ・運転資金
+  <div class="wrap section" id="terms">
+    <h2>■ 投資条件（固定）</h2>
+    <div class="panel">
+      <ul>
+        <li><strong>出資単位：</strong>1口 1,000万円（固定）</li>
+        <li><strong>募集上限：</strong>最大10口（総額1億円）</li>
+        <li><strong>募集期間：</strong>公開から30日間（満額到達で終了）</li>
+        <li><strong>想定スキーム：</strong>将来株式転換型（J-KISS予定）</li>
+        <li><strong>転換イベント：</strong>次回資金調達等</li>
+        <li><strong>資金使途：</strong>システム拡張 / マーケティング / 運転資金</li>
+      </ul>
+      <div class="note danger">
+        ※本ページは勧誘資料ではなく概要提示です。最終条件・手続きは契約書面/説明書面をご確認ください。
+      </div>
     </div>
-</section>
+  </div>
 
-<section>
-    <h2>■ Exit戦略</h2>
-    <div class="box">
-        ・3〜5年以内のVCラウンド転換<br>
-        ・M&A売却<br>
-        ・将来的な配当フェーズ移行
-    </div>
-</section>
-
-<section>
+  <div class="wrap section" id="edge">
     <h2>■ 競争優位性</h2>
-    <div class="box">
-        ・震度4以上統計データに基づくモデル設計<br>
-        ・家財判定ロジック自動化<br>
-        ・完全オンライン完結型<br>
-        ・ブラックスワン非依存型収益構造
+    <div class="panel">
+      <ul>
+        <li>震度4以上の統計データを前提にしたトリガー設計</li>
+        <li>家財判定ロジック・レポート自動生成（運用を標準化）</li>
+        <li>完全オンライン完結型（速度×スケール）</li>
+        <li>「ブラックスワン非連動」＝発生頻度のあるトリガーで回す</li>
+      </ul>
     </div>
-</section>
+  </div>
 
-<section>
-    <h2>■ 実行体制</h2>
-    <div class="box">
-        運営主体：株式会社F.L.H<br>
-        申請フロー・自動判定システム構築済<br>
-        法令遵守のもと運営
-    </div>
-</section>
-
-<section>
+  <div class="wrap section" id="risk">
     <h2>■ リスク説明</h2>
-    <div class="box">
-        ・元本保証ではありません<br>
-        ・地震発生頻度に依存します<br>
-        ・法規制変更リスクがあります<br>
-        ・資金拘束期間が発生します
+    <div class="panel">
+      <ul>
+        <li>元本保証ではありません</li>
+        <li>地震発生頻度・地域偏在等の外部要因に影響されます</li>
+        <li>法規制・業界ルール変更のリスクがあります</li>
+        <li>資金拘束期間が発生します（転換/回収条件に依存）</li>
+      </ul>
+      <div class="note">
+        詳細はIR資料（PDF）に記載。投資判断はご自身の責任でお願いします。
+      </div>
     </div>
-</section>
+  </div>
 
-<section style="text-align:center;">
-    <h2>■ 投資申込</h2>
-    <p class="highlight">限定10口のみ</p>
-    <a href="https://docs.google.com/forms/d/e/1FAIpQLSd_AiwlEUAME2zixqUmBf0otCLqDfRnFQq2IDeOChX-8xHo9w/viewform" class="button">
-        投資申込フォームへ
-    </a>
-</section>
+  <div class="wrap section" id="apply" style="padding-bottom:10px">
+    <h2>■ 出資申請</h2>
+    <div class="panel" style="text-align:center">
+      <div style="font-weight:800;font-size:18px;letter-spacing:.2px;margin-bottom:8px">限定10口のみ（1口1,000万円固定）</div>
+      <div class="note" style="margin:0 0 14px">送信後、受付完了メール・IRリンク・次ステップ（J-KISS案内）を自動送信します。</div>
+      <div class="cta-row" style="justify-content:center">
+        <a class="pill primary" href="https://docs.google.com/forms/d/e/1FAIpQLSd_AiwlEUAME2zixqUmBf0otCLqDfRnFQq2IDeOChX-8xHo9w/viewform" target="_blank" rel="noopener">投資申込フォームへ</a>
+        <a class="pill" href="./HISAIDO_IR.pdf" target="_blank" rel="noopener">IR資料（PDF）</a>
+      </div>
+    </div>
+  </div>
 
-<div class="footer">
-    HISAIDO / 株式会社F.L.H<br>
-    お問い合わせ：invest@flh.works
-</div>
+  <div class="wrap footer">
+    <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between">
+      <div>HISAIDO / 株式会社F.L.H</div>
+      <div>お問い合わせ：<a href="mailto:invest@flh.works">invest@flh.works</a></div>
+    </div>
+  </div>
 
 </body>
 </html>
