@@ -1,188 +1,155 @@
-<!doctype html>
+﻿<!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>HISAIDO | 投資家向け</title>
-  <style>
-    :root{
-      --bg:#0b1220; --card:#0f1b33; --muted:#9fb0d0; --text:#eef3ff; --accent:#4aa3ff; --accent2:#7c5cff;
-      --border: rgba(255,255,255,.10);
-    }
-    *{box-sizing:border-box}
-    body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Hiragino Kaku Gothic ProN","Noto Sans JP",Meiryo,sans-serif;background:linear-gradient(180deg,var(--bg),#070b14);color:var(--text)}
-    a{color:var(--accent);text-decoration:none}
-    .wrap{max-width:1020px;margin:0 auto;padding:26px 18px 70px}
-    .nav{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
-    .brand{font-weight:800;letter-spacing:.8px}
-    .pill{display:inline-block;padding:7px 11px;border:1px solid var(--border);border-radius:999px;color:var(--muted);font-size:12px}
-    .hero{padding:28px 0 18px}
-    .h1{font-size:38px;line-height:1.15;margin:10px 0 10px;font-weight:900}
-    .sub{color:var(--muted);font-size:15.5px;line-height:1.7;max-width:820px}
-    .ctaRow{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px}
-    .btn{padding:12px 16px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--text);font-weight:700}
-    .btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));border:0}
-    .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px;margin-top:18px}
-    .card{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:14px;padding:16px}
-    .kpi{grid-column:span 4}
-    .kpi .n{font-size:24px;font-weight:900;margin-top:6px}
-    .kpi .t{color:var(--muted);font-size:12.5px}
-    .section{margin-top:22px}
-    .section h2{font-size:18px;margin:0 0 10px}
-    .section p{margin:0;color:var(--muted);line-height:1.75}
-    .two{grid-column:span 6}
-    .full{grid-column:span 12}
-    .list{margin:10px 0 0;padding-left:18px;color:var(--muted);line-height:1.75}
-    .table{width:100%;border-collapse:collapse;margin-top:12px}
-    .table th,.table td{border:1px solid var(--border);padding:10px 10px;font-size:13px}
-    .table th{background:rgba(255,255,255,.04);text-align:left}
-    .tag{display:inline-block;margin-top:8px;font-size:12px;color:#d7e6ff;background:rgba(74,163,255,.15);border:1px solid rgba(74,163,255,.25);padding:6px 10px;border-radius:999px}
-    .divider{height:1px;background:var(--border);margin:18px 0}
-    .fine{font-size:12px;color:rgba(220,230,255,.65);line-height:1.6}
-    .sticky{position:sticky;bottom:0;background:rgba(11,18,32,.75);backdrop-filter:blur(10px);border-top:1px solid var(--border);padding:12px 0;margin-top:40px}
-    .sticky .wrap{padding:0 18px}
-  </style>
+<meta charset="UTF-8">
+<title>HISAIDO 投資家ページ</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body{
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+    margin:0;
+    background:#f8f8f8;
+    color:#222;
+    line-height:1.7;
+}
+section{
+    padding:60px 20px;
+    max-width:900px;
+    margin:auto;
+}
+h1,h2,h3{
+    margin-bottom:20px;
+}
+.hero{
+    background:#111;
+    color:#fff;
+    text-align:center;
+    padding:100px 20px;
+}
+.hero h1{
+    font-size:32px;
+}
+.box{
+    background:#fff;
+    padding:30px;
+    border-radius:8px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.05);
+    margin-bottom:30px;
+}
+.highlight{
+    color:#c0392b;
+    font-weight:bold;
+}
+.button{
+    display:inline-block;
+    background:#111;
+    color:#fff;
+    padding:15px 25px;
+    text-decoration:none;
+    border-radius:5px;
+    margin-top:20px;
+}
+.footer{
+    background:#111;
+    color:#fff;
+    text-align:center;
+    padding:40px 20px;
+}
+</style>
 </head>
+
 <body>
-  <div class="wrap">
-    <div class="nav">
-      <div class="brand">HISAIDO <span class="pill">投資家向け</span></div>
-      <a class="pill" href="#terms">募集条件</a>
+
+<div class="hero">
+    <h1>ブラックスワンを収益化する</h1>
+    <p>震度4以上発生時に機能する、非連動型モデル</p>
+</div>
+
+<section>
+    <h2>■ 事業概要</h2>
+    <div class="box">
+        HISAIDOは、地震保険（家財）申請支援を自動化するシステムです。<br>
+        震度4以上をトリガーとした成功報酬型モデルで収益を構築しています。
     </div>
+</section>
 
-    <div class="hero">
-      <div class="pill">家財特化・地震保険支援 × 震度トリガー</div>
-      <div class="h1">年平均 約99回の震度4+が<br/>自然に発生するリード源</div>
-      <div class="sub">
-        HISAIDOは「家財」に特化し、被害の整理〜レポート化までを標準化して支援するモデルです。収益は成功報酬25%（完全成功報酬）。
-        <br/>募集：1名1,000万円（最大10名／総額1億円）・30日限定。
-      </div>
-      <div class="ctaRow">
-        <a class="btn primary" href="#apply">出資申請へ</a>
-        <a class="btn" href="#ir">IR資料（PDF）</a>
-      </div>
+<section>
+    <h2>■ 収益モデル</h2>
+    <div class="box">
+        ・成功報酬：25%<br>
+        ・震度4以上：年平均 約99回<br>
+        ・ブラックスワン非連動型収益モデル
     </div>
+</section>
 
-    <div class="grid">
-      <div class="card kpi">
-        <div class="t">震度4以上（2000〜現在の集計）</div>
-        <div class="n">年平均 約99回</div>
-      </div>
-      <div class="card kpi">
-        <div class="t">収益モデル</div>
-        <div class="n">成功報酬 25%</div>
-      </div>
-      <div class="card kpi">
-        <div class="t">募集</div>
-        <div class="n">30日限定</div>
-      </div>
+<section>
+    <h2>■ 投資条件</h2>
+    <div class="box">
+        <strong>出資単位：</strong>1口 1,000万円（固定）<br>
+        <strong>募集上限：</strong>最大10口（総額1億円）<br>
+        <strong>募集期間：</strong>公開から30日間<br><br>
 
-      <div class="card full section" id="market">
-        <h2>市場トリガー</h2>
-        <p>
-          震度4以上は発生頻度が高く、発生後に即座に動ける仕組みがあれば「待つビジネス」ではなく「トリガー型の獲得モデル」になります。
-          家財は申請が後回しになりやすく、未開拓領域が大きい点が特徴です。
-        </p>
-        <div class="tag">震度発生 → 問い合わせ需要が生まれる</div>
-      </div>
+        <strong>想定スキーム：</strong>将来株式転換型（J-KISS予定）<br>
+        ・ディスカウント率：20%想定<br>
+        ・転換イベント：次回資金調達<br><br>
 
-      <div class="card full section" id="model">
-        <h2>収益モデル（シンプル）</h2>
-        <p>平均保険金120万円・成功報酬25%（30万円/件）を前提にしたモデル例。</p>
-        <table class="table">
-          <thead>
-            <tr><th>モデル</th><th>年間件数</th><th>年間粗利（目安）</th></tr>
-          </thead>
-          <tbody>
-            <tr><td>保守</td><td>60件</td><td>1,800万円</td></tr>
-            <tr><td>現実ライン</td><td>100件</td><td>3,000万円</td></tr>
-            <tr><td>拡大</td><td>200件</td><td>6,000万円</td></tr>
-          </tbody>
-        </table>
-        <div class="fine">※想定。成果を保証するものではありません。</div>
-      </div>
-
-      <div class="card two section" id="payback">
-        <h2>投資回収（1,000万円出資の想定）</h2>
-        <p>
-          営業利益率60%想定。評価倍率5倍の場合、成長モデルで約9倍、拡大型で約18倍の可能性。
-        </p>
-        <ul class="list">
-          <li>保守：利益約1,080万円 → 評価約5,400万円（約5.4倍）</li>
-          <li>成長：利益約1,800万円 → 評価約9,000万円（約9倍）</li>
-          <li>拡大：利益約3,600万円 → 評価約1.8億円（約18倍）</li>
-        </ul>
-      </div>
-
-      <div class="card two section" id="why">
-        <h2>なぜ今</h2>
-        <ul class="list">
-          <li>家財特化プレイヤーがほぼ不在</li>
-          <li>震度データは公開されているが未活用</li>
-          <li>初期参入者が業界基準を作る</li>
-          <li>30日限定募集（満額到達で即終了）</li>
-        </ul>
-      </div>
-
-      <div class="card full section" id="logic">
-        <h2>家財特化の整理基準を体系化済み（再現性）</h2>
-        <p>
-          HISAIDOは家財カテゴリー別（食器／電気器具／家具／身回品／寝具衣類）の整理基準と、落下・転倒・汚損などの状態変化分類フローを構築済み。
-          調査前に被害情報を構造化し、属人性を抑えた運用設計でスケール可能性を担保します。
-        </p>
-        <div class="tag">感覚ではなく「構造」で動く</div>
-      </div>
-
-      <div class="card full section" id="terms">
-        <h2>募集条件（限定）</h2>
-        <ul class="list">
-          <li>1名あたり：1,000万円</li>
-          <li>最大：10名（総額上限 1億円）</li>
-          <li>募集期間：30日（満額到達で即終了）</li>
-          <li>面談なし・オンライン完結</li>
-        </ul>
-        <div class="divider"></div>
-        <div class="fine">
-          ※本ページは情報提供を目的としたもので、将来の成果や利益を保証するものではありません。
-        </div>
-      </div>
-
-      <div class="card full section" id="ir">
-        <h2>IR資料（PDF）</h2>
-        <p>以下の資料をセットで提供します（チャット内で生成済み）。</p>
-        <ul class="list">
-          <li>収益モデル1枚</li>
-          <li>投資回収シミュレーション</li>
-          <li>なぜ今</li>
-          <li>最終IRパッケージ（統合版）</li>
-        </ul>
-      </div>
-
-      <div class="card full section" id="apply">
-        <h2>出資申請</h2>
-        <p>
-          申請はオンラインで完結します。申請導線（Googleフォーム等）をここに接続してください。
-        </p>
-        <div class="ctaRow">
-          <a class="btn primary" href="https://docs.google.com/forms/d/e/1FAIpQLSd_AiwlEUAME2zixqUmBf0otCLqDfRnFQq2IDeOChX-8xHo9w/viewform" target="_blank" rel="noopener">出資申請フォームへ</a>
-          <a class="btn" href="#terms">募集条件を見る</a>
-        </div>
-      </div>
+        <strong>資金使途：</strong><br>
+        ・システム拡張<br>
+        ・マーケティング<br>
+        ・運転資金
     </div>
-  </div>
+</section>
 
-  <div class="sticky">
-    <div class="wrap">
-      <div style="display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;">
-        <div style="color:rgba(220,230,255,.8);font-size:13px;">
-          30日限定・最大10名。満額到達で終了。
-        </div>
-        <div class="ctaRow" style="margin:0">
-          <a class="btn primary" href="#apply">出資申請へ</a>
-          <a class="btn" href="#ir">IR資料</a>
-        </div>
-      </div>
+<section>
+    <h2>■ Exit戦略</h2>
+    <div class="box">
+        ・3〜5年以内のVCラウンド転換<br>
+        ・M&A売却<br>
+        ・将来的な配当フェーズ移行
     </div>
-  </div>
+</section>
+
+<section>
+    <h2>■ 競争優位性</h2>
+    <div class="box">
+        ・震度4以上統計データに基づくモデル設計<br>
+        ・家財判定ロジック自動化<br>
+        ・完全オンライン完結型<br>
+        ・ブラックスワン非依存型収益構造
+    </div>
+</section>
+
+<section>
+    <h2>■ 実行体制</h2>
+    <div class="box">
+        運営主体：株式会社F.L.H<br>
+        申請フロー・自動判定システム構築済<br>
+        法令遵守のもと運営
+    </div>
+</section>
+
+<section>
+    <h2>■ リスク説明</h2>
+    <div class="box">
+        ・元本保証ではありません<br>
+        ・地震発生頻度に依存します<br>
+        ・法規制変更リスクがあります<br>
+        ・資金拘束期間が発生します
+    </div>
+</section>
+
+<section style="text-align:center;">
+    <h2>■ 投資申込</h2>
+    <p class="highlight">限定10口のみ</p>
+    <a href="https://docs.google.com/forms/d/e/1FAIpQLSd_AiwlEUAME2zixqUmBf0otCLqDfRnFQq2IDeOChX-8xHo9w/viewform" class="button">
+        投資申込フォームへ
+    </a>
+</section>
+
+<div class="footer">
+    HISAIDO / 株式会社F.L.H<br>
+    お問い合わせ：invest@flh.works
+</div>
+
 </body>
 </html>
