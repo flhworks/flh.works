@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="フリマの販売価格から手数料・送料・梱包費・値下げ・作業時間を差し引き、買取査定額との損益分岐を計算します。">
+  <meta name="theme-color" content="#17315f">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="フリマの実質手取り計算｜売る前診断">
+  <meta property="og:description" content="フリマの販売価格から手数料・送料・梱包費・値下げ・作業時間を差し引き、買取査定額との損益分岐を計算します。">
+  <title>フリマの実質手取り計算｜売る前診断</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/styles.css">
+
+</head>
+<body>
+  <a class="skip-link" href="#main">本文へ移動</a>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="index.html" aria-label="売る前診断 トップへ">
+        <span class="brand-mark" aria-hidden="true">売</span>
+        <span><strong>売る前診断</strong><small>売却方法を決める前の比較メディア</small></span>
+      </a>
+      <button class="menu-button" type="button" aria-expanded="false" aria-controls="global-nav">メニュー</button>
+      <nav id="global-nav" class="global-nav" aria-label="主要メニュー"><a href="index.html" class="nav-link">売り方診断</a><a href="compare.html" class="nav-link">4つの方法を比較</a><a href="flea-profit.html" aria-current="page" class="nav-link is-active">手取り計算</a><a href="checklist.html" class="nav-link">売却前チェック</a><a href="sources.html" class="nav-link">情報源・更新方針</a></nav>
+    </div>
+  </header>
+  <main id="main"><section class="page-hero"><div class="container"><div class="breadcrumb"><a href="index.html">トップ</a><span aria-hidden="true">/</span><span>フリマの実質手取り計算</span></div><h1>フリマの実質手取り計算</h1><p class="page-lead">販売価格から、手数料・送料・梱包費・値下げ・作業時間を差し引いて概算します。</p></div></section>
+<section class="section"><div class="container"><div class="content-grid"><div>
+  <div class="card calculator" id="calculator">
+    <div class="callout"><strong>簡易試算です。</strong>各サービスの端数処理、キャンペーン、配送条件等により実額は変わります。最終的には出品画面・公式案内で確認してください。</div>
+    <div class="form-grid" style="margin-top:22px">
+      <div class="field field-full"><label for="platform">販売サービスと手数料率</label><select id="platform"><option value="10">メルカリ（通常10%）</option><option value="5">Yahoo!フリマ（通常5%）</option><option value="10">楽天ラクマ（10%）</option><option value="9">楽天ラクマ（9%）</option><option value="8">楽天ラクマ（8%）</option><option value="7">楽天ラクマ（7%）</option><option value="6">楽天ラクマ（6%）</option><option value="4.5">楽天ラクマ（4.5%）</option><option value="custom">その他・自分で入力</option></select><small>2026年8月23日に公式ページで確認した通常値・変動幅です。キャンペーン適用時は実際の率を入力してください。</small></div>
+      <div class="field"><label for="price">想定販売価格</label><div class="input-wrap"><input id="price" type="number" min="0" step="100" inputmode="numeric" value="20000"><span class="suffix">円</span></div></div>
+      <div class="field"><label for="fee-rate">販売手数料率</label><div class="input-wrap"><input id="fee-rate" type="number" min="0" max="100" step="0.1" value="10"><span class="suffix">%</span></div></div>
+      <div class="field"><label for="shipping">送料</label><div class="input-wrap"><input id="shipping" type="number" min="0" step="10" value="750"><span class="suffix">円</span></div></div>
+      <div class="field"><label for="packing">梱包資材費</label><div class="input-wrap"><input id="packing" type="number" min="0" step="10" value="200"><span class="suffix">円</span></div></div>
+      <div class="field"><label for="discount">想定値下げ額</label><div class="input-wrap"><input id="discount" type="number" min="0" step="100" value="1000"><span class="suffix">円</span></div></div>
+      <div class="field"><label for="transfer">振込等の手数料</label><div class="input-wrap"><input id="transfer" type="number" min="0" step="10" value="0"><span class="suffix">円</span></div></div>
+      <div class="field"><label for="minutes">作業時間</label><div class="input-wrap"><input id="minutes" type="number" min="0" step="10" value="90"><span class="suffix">分</span></div><small>撮影、説明、交渉、梱包、発送を含めます。</small></div>
+      <div class="field"><label for="hourly">自分の時間価値</label><div class="input-wrap"><input id="hourly" type="number" min="0" step="100" value="1000"><span class="suffix">円/時</span></div><small>0円にすると時間価値を除外できます。</small></div>
+    </div>
+    <div class="calc-result" aria-live="polite">
+      <div class="metric"><span>販売手数料の概算</span><strong id="fee-out">0円</strong></div>
+      <div class="metric metric-primary"><span>現金ベースの手取り</span><strong id="cash-out">0円</strong></div>
+      <div class="metric metric-green"><span>時間価値を含む実質手取り</span><strong id="adjusted-out">0円</strong></div>
+    </div>
+    <div class="notice" style="margin-top:18px"><span class="notice-icon">比</span><p><strong>買取査定額との比較：</strong>現金だけで比べるなら <span id="break-even-cash">0円</span>、作業時間まで含めるなら <span id="break-even-adjusted">0円</span> が損益分岐の目安です。</p></div>
+  </div>
+  <article class="article" style="margin-top:24px">
+    <h2>計算に入れる費用</h2><p>販売価格だけを比較すると、フリマが常に高く見えます。実際には、販売手数料、送料、梱包資材、値下げ、振込等の費用が発生します。大型品では、配送方法によって送料が大きく変わるため、実際のサイズと発送元・発送先を確認します。</p>
+    <h2>作業時間を入れる理由</h2><p>撮影、採寸、説明文、質問対応、価格交渉、梱包、発送、取引後対応には時間がかかります。金額差が小さい場合、その差額が作業時間に見合うかを確認すると判断しやすくなります。</p>
+    <h2>公式手数料の確認値</h2><ul><li>メルカリ：販売価格の10%</li><li>Yahoo!フリマ：通常5%。対象者向けの期間限定・条件付き特典があるため、適用状況はマイページで確認</li><li>楽天ラクマ：販売実績に応じて10%、9%、8%、7%、6%、4.5%の6段階</li></ul><p>出典は<a href="sources.html">情報源・更新方針</a>にまとめています。</p>
+  </article>
+</div><aside class="sidebar"><div class="card sidebar-card"><h3>このサイトの前提</h3><ul><li>査定・買取・仲介は行いません</li><li>価格や売却成立を保証しません</li><li>事業者ごとの最新条件を確認します</li><li>個人情報は入力しません</li></ul></div><div class="callout callout-blue"><strong>迷ったとき</strong><br>金額だけでなく、送料・返送料・交通費・作業時間・トラブル対応まで含めて比較します。</div></aside></div></div></section></main>
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-about">
+        <a class="brand footer-brand" href="index.html"><span class="brand-mark" aria-hidden="true">売</span><span><strong>売る前診断</strong><small>売る場所を決める前に、条件を整理する。</small></span></a>
+        <p>当サイトは商品の査定・買取・仲介を行いません。表示結果は一般的な判断材料であり、価格や売却成立を保証するものではありません。</p>
+      </div>
+      <nav class="footer-nav" aria-label="補助メニュー"><a href="about.html">このサイトについて</a><a href="editorial-policy.html">編集方針</a><a href="advertising-policy.html">広告・PR方針</a><a href="privacy.html">プライバシー</a><a href="sources.html">情報源</a></nav>
+    </div>
+    <div class="footer-bottom">
+      <p>情報確認日：2026年8月23日　© 2026 売る前診断</p>
+      <p class="no-ad-note">現在、広告・アフィリエイトリンクは掲載していません。</p>
+    </div>
+  </footer>
+  <script src="assets/common.js" defer></script>
+  <script src="assets/calculator.js" defer></script>
+</body>
+</html>

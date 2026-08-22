@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+# Sitemap URLは公開URL確定後に設定
