@@ -1,0 +1,105 @@
+name: Verify affiliate site v1.1 live
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  verify-live-site:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Verify published pages, assets, sitemap, and no-ad state
+        shell: bash
+        run: |
+          set -euo pipefail
+          base="https://flhworks.github.io/flh.works/uru-mae-shindan"
+          tmp="$(mktemp -d)"
+          trap 'rm -rf "$tmp"' EXIT
+
+          fetch_until_live() {
+            local url="$1"
+            local output="$2"
+            local marker="${3:-}"
+            local status=""
+            for attempt in $(seq 1 30); do
+              status="$(curl --silent --show-error --location --output "$output" --write-out '%{http_code}' "$url" || true)"
+              echo "attempt=${attempt} url=${url} status=${status}"
+              if [[ "$status" == "200" ]]; then
+                if [[ -z "$marker" ]] || grep -Fq "$marker" "$output"; then
+                  return 0
+                fi
+              fi
+              sleep 10
+            done
+            echo "ERROR: ${url} did not become live with expected content" >&2
+            return 1
+          }
+
+          fetch_until_live "$base/" "$tmp/index.html" '楽器・機材のガイドを見る'
+          grep -Fq '<link href="assets/category-guide.css" rel="stylesheet"/>' "$tmp/index.html"
+          grep -Fq 'https://flhworks.github.io/flh.works/uru-mae-shindan/' "$tmp/index.html"
+          grep -Fq '現在、広告・アフィリエイトリンクは掲載していません。' "$tmp/index.html"
+
+          pages=(
+            instrument-selling.html
+            checklist.html
+            compare.html
+            flea-profit.html
+            home-purchase.html
+            visit-purchase.html
+            store-purchase.html
+            about.html
+            editorial-policy.html
+            advertising-policy.html
+            privacy.html
+            sources.html
+            404.html
+          )
+          for page in "${pages[@]}"; do
+            fetch_until_live "$base/$page" "$tmp/$page" '売る前診断'
+          done
+
+          grep -Fq 'ギター、ベース、アンプ、エフェクター' "$tmp/instrument-selling.html"
+          grep -Fq '楽器・音響・DTM機材' "$tmp/checklist.html"
+          grep -Fq '広告・アフィリエイトリンクを掲載していません' "$tmp/instrument-selling.html"
+
+          assets=(
+            assets/styles.css
+            assets/category-guide.css
+            assets/common.js
+            assets/diagnosis.js
+            assets/calculator.js
+            assets/favicon.svg
+            robots.txt
+            sitemap.xml
+          )
+          for asset in "${assets[@]}"; do
+            safe_name="${asset//\//_}"
+            fetch_until_live "$base/$asset" "$tmp/$safe_name"
+            test -s "$tmp/$safe_name"
+          done
+
+          grep -Fq '.category-feature' "$tmp/assets_category-guide.css"
+          grep -Fq 'Sitemap: https://flhworks.github.io/flh.works/uru-mae-shindan/sitemap.xml' "$tmp/robots.txt"
+          grep -Fq 'instrument-selling.html' "$tmp/sitemap.xml"
+          [[ "$(grep -c '<url>' "$tmp/sitemap.xml")" == "13" ]]
+
+          if grep -Eiq '(px\.a8\.net|media-console\.a8\.net|affiliate[-_ ]?link|広告コード)' "$tmp/index.html" "$tmp/instrument-selling.html"; then
+            echo 'ERROR: unexpected affiliate link or ad code marker found' >&2
+            exit 1
+          fi
+
+          unknown_status="$(curl --silent --show-error --location --output "$tmp/unknown.html" --write-out '%{http_code}' "$base/__verification_missing_page_v1_1__" || true)"
+          echo "unknown_path_status=${unknown_status}"
+          [[ "$unknown_status" == "404" ]]
+
+          echo "LIVE_VERIFIED_URL=$base/"
+          echo "LIVE_VERIFIED_HTML=14"
+          echo "LIVE_VERIFIED_ASSETS_AND_DISCOVERY=8"
+          echo "LIVE_VERIFIED_SITEMAP_URLS=13"
+          echo "LIVE_VERIFIED_AFFILIATE_LINKS=0"
