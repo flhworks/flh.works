@@ -27,7 +27,7 @@ jobs:
 
           root = Path('uru-mae-shindan')
           html_files = sorted(root.glob('*.html'))
-          assert len(html_files) == 14, len(html_files)
+          assert len(html_files) == 14, f'html_count={len(html_files)}'
           required = [
               'index.html','instrument-selling.html','checklist.html','compare.html',
               'flea-profit.html','home-purchase.html','visit-purchase.html','store-purchase.html',
@@ -37,18 +37,18 @@ jobs:
               'assets/calculator.js','assets/favicon.svg'
           ]
           for rel in required:
-              assert (root / rel).is_file(), rel
+              assert (root / rel).is_file(), f'missing_file={rel}'
 
           index = (root / 'index.html').read_text(encoding='utf-8')
           guide = (root / 'instrument-selling.html').read_text(encoding='utf-8')
           checklist = (root / 'checklist.html').read_text(encoding='utf-8')
           robots = (root / 'robots.txt').read_text(encoding='utf-8')
-          assert '楽器・機材のガイドを見る' in index
-          assert 'assets/category-guide.css' in index
-          assert 'ギター・ベース・アンプ・エフェクター' in guide
-          assert '楽器・音響・DTM機材' in checklist
-          assert 'Sitemap: https://flhworks.github.io/flh.works/uru-mae-shindan/sitemap.xml' in robots
-          assert '現在、広告・アフィリエイトリンクは掲載していません。' in index
+          assert '楽器・機材のガイドを見る' in index, 'home_category_link'
+          assert 'assets/category-guide.css' in index, 'home_category_stylesheet'
+          assert 'ギター、ベース、アンプ、エフェクター' in guide, 'instrument_scope'
+          assert '楽器・音響・DTM機材' in checklist, 'instrument_checklist'
+          assert 'Sitemap: https://flhworks.github.io/flh.works/uru-mae-shindan/sitemap.xml' in robots, 'robots_sitemap'
+          assert '現在、広告・アフィリエイトリンクは掲載していません。' in index, 'no_ad_notice'
 
           class LinkParser(HTMLParser):
               def __init__(self):
@@ -80,9 +80,9 @@ jobs:
           ns = {'sm':'http://www.sitemaps.org/schemas/sitemap/0.9'}
           tree = ET.parse(root / 'sitemap.xml')
           urls = tree.findall('.//sm:url', ns)
-          assert len(urls) == 13, len(urls)
+          assert len(urls) == 13, f'sitemap_count={len(urls)}'
           locations = [u.find('sm:loc', ns).text for u in urls]
-          assert 'https://flhworks.github.io/flh.works/uru-mae-shindan/instrument-selling.html' in locations
+          assert 'https://flhworks.github.io/flh.works/uru-mae-shindan/instrument-selling.html' in locations, 'guide_not_in_sitemap'
           print(f'STATIC_QA_PASS html={len(html_files)} sitemap_urls={len(urls)}')
           PY
           node --check uru-mae-shindan/assets/common.js
