@@ -1,0 +1,67 @@
+name: Verify assessment check live
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  verify-live-site:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Verify published assessment page and assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          base="https://flhworks.github.io/flh.works/uru-mae-shindan"
+          tmp="$(mktemp -d)"
+          trap 'rm -rf "$tmp"' EXIT
+
+          fetch_until_live() {
+            local url="$1"
+            local output="$2"
+            local marker="${3:-}"
+            local status=""
+            for attempt in $(seq 1 30); do
+              status="$(curl --silent --show-error --location --output "$output" --write-out '%{http_code}' "$url" || true)"
+              echo "attempt=${attempt} url=${url} status=${status}"
+              if [[ "$status" == "200" ]]; then
+                if [[ -z "$marker" ]] || grep -Fq "$marker" "$output"; then
+                  return 0
+                fi
+              fi
+              sleep 10
+            done
+            echo "ERROR: ${url} did not become live with expected content" >&2
+            return 1
+          }
+
+          fetch_until_live "$base/instrument-assessment-check.html" "$tmp/assessment.html" '楽器買取の無料査定前チェック'
+          fetch_until_live "$base/instrument-selling.html" "$tmp/instrument.html" '無料査定前チェックを開く'
+          fetch_until_live "$base/assets/assessment-check.css" "$tmp/assessment.css" '.assessment-form'
+          fetch_until_live "$base/assets/assessment-check.js" "$tmp/assessment.js" "requiredNames = ['history', 'item', 'region', 'eligibleItem', 'deadline', 'method']"
+          fetch_until_live "$base/sitemap.xml" "$tmp/sitemap.xml" 'instrument-assessment-check.html'
+
+          grep -Fq '入力内容は外部送信なし' "$tmp/assessment.html"
+          grep -Fq '本人または同一世帯' "$tmp/assessment.html"
+          grep -Fq '30日以内に査定' "$tmp/assessment.html"
+          grep -Fq 'new FormData(form)' "$tmp/assessment.js"
+          [[ "$(grep -c '<url>' "$tmp/sitemap.xml")" == "14" ]]
+
+          if grep -Eiq '(px\.a8\.net|media-console\.a8\.net|programId=s00000027408001)' "$tmp/assessment.html" "$tmp/instrument.html"; then
+            echo 'ERROR: affiliate code or private program URL published before approval' >&2
+            exit 1
+          fi
+
+          unknown_status="$(curl --silent --show-error --location --output "$tmp/unknown.html" --write-out '%{http_code}' "$base/__verification_missing_assessment_check__" || true)"
+          echo "unknown_path_status=${unknown_status}"
+          [[ "$unknown_status" == "404" ]]
+
+          echo "LIVE_VERIFIED_URL=$base/"
+          echo "LIVE_VERIFIED_ASSESSMENT_CHECK=PASS"
+          echo "LIVE_VERIFIED_SITEMAP_URLS=14"
+          echo "LIVE_VERIFIED_AFFILIATE_LINKS=0"
