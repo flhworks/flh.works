@@ -1,0 +1,49 @@
+name: Monitor 売る前診断 live site
+
+on:
+  schedule:
+    - cron: '17 21 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  monitor-live-site:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Check public pages and discovery files
+        shell: bash
+        run: |
+          set -euo pipefail
+          base="https://flhworks.github.io/flh.works/uru-mae-shindan"
+          tmp="$(mktemp -d)"
+          trap 'rm -rf "$tmp"' EXIT
+
+          check_200() {
+            local url="$1"
+            local output="$2"
+            local marker="$3"
+            local status
+            status="$(curl --fail-with-body --silent --show-error --location --output "$output" --write-out '%{http_code}' "$url")"
+            echo "url=${url} status=${status}"
+            [[ "$status" == "200" ]]
+            grep -Fq "$marker" "$output"
+          }
+
+          check_200 "$base/" "$tmp/index.html" '売る前診断'
+          check_200 "$base/instrument-selling.html" "$tmp/instrument.html" '楽器・機材を売る前に'
+          check_200 "$base/instrument-assessment-check.html" "$tmp/assessment.html" '楽器買取の無料査定前チェック'
+          check_200 "$base/assets/assessment-check.js" "$tmp/assessment.js" 'new FormData(form)'
+          check_200 "$base/sitemap.xml" "$tmp/sitemap.xml" 'instrument-assessment-check.html'
+
+          unknown_status="$(curl --silent --show-error --location --output "$tmp/unknown.html" --write-out '%{http_code}' "$base/__scheduled_monitor_missing_page__" || true)"
+          echo "unknown_path_status=${unknown_status}"
+          [[ "$unknown_status" == "404" ]]
+
+          grep -Fq 'instrument-selling.html' "$tmp/sitemap.xml"
+          grep -Fq 'instrument-assessment-check.html' "$tmp/sitemap.xml"
+          grep -Fq '広告について' "$tmp/assessment.html"
+
+          echo 'URU_MAE_SHINDAN_MONITOR=PASS'
