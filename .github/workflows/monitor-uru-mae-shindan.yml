@@ -1,6 +1,12 @@
 name: Monitor 売る前診断 live site
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'uru-mae-shindan/**'
+      - '.github/workflows/monitor-uru-mae-shindan.yml'
   schedule:
     - cron: '17 21 * * 1'
   workflow_dispatch:
@@ -11,7 +17,7 @@ permissions:
 jobs:
   monitor-live-site:
     runs-on: ubuntu-24.04
-    timeout-minutes: 5
+    timeout-minutes: 8
     steps:
       - name: Check public pages and discovery files
         shell: bash
@@ -21,22 +27,28 @@ jobs:
           tmp="$(mktemp -d)"
           trap 'rm -rf "$tmp"' EXIT
 
-          check_200() {
+          check_until_ready() {
             local url="$1"
             local output="$2"
             local marker="$3"
-            local status
-            status="$(curl --fail-with-body --silent --show-error --location --output "$output" --write-out '%{http_code}' "$url")"
-            echo "url=${url} status=${status}"
-            [[ "$status" == "200" ]]
-            grep -Fq "$marker" "$output"
+            local status=""
+            for attempt in $(seq 1 24); do
+              status="$(curl --silent --show-error --location --output "$output" --write-out '%{http_code}' "$url" || true)"
+              echo "attempt=${attempt} url=${url} status=${status}"
+              if [[ "$status" == "200" ]] && grep -Fq "$marker" "$output"; then
+                return 0
+              fi
+              sleep 10
+            done
+            echo "ERROR: ${url} did not return expected content" >&2
+            return 1
           }
 
-          check_200 "$base/" "$tmp/index.html" '売る前診断'
-          check_200 "$base/instrument-selling.html" "$tmp/instrument.html" '楽器・機材を売る前に'
-          check_200 "$base/instrument-assessment-check.html" "$tmp/assessment.html" '楽器買取の無料査定前チェック'
-          check_200 "$base/assets/assessment-check.js" "$tmp/assessment.js" 'new FormData(form)'
-          check_200 "$base/sitemap.xml" "$tmp/sitemap.xml" 'instrument-assessment-check.html'
+          check_until_ready "$base/" "$tmp/index.html" '売る前診断'
+          check_until_ready "$base/instrument-selling.html" "$tmp/instrument.html" '楽器・機材を売る前に'
+          check_until_ready "$base/instrument-assessment-check.html" "$tmp/assessment.html" '楽器買取の無料査定前チェック'
+          check_until_ready "$base/assets/assessment-check.js" "$tmp/assessment.js" 'new FormData(form)'
+          check_until_ready "$base/sitemap.xml" "$tmp/sitemap.xml" 'instrument-assessment-check.html'
 
           unknown_status="$(curl --silent --show-error --location --output "$tmp/unknown.html" --write-out '%{http_code}' "$base/__scheduled_monitor_missing_page__" || true)"
           echo "unknown_path_status=${unknown_status}"
