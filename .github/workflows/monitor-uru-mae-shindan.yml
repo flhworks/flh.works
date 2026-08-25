@@ -57,9 +57,11 @@ jobs:
           check_until_ready "$base/instrument-selling.html" "$tmp/instrument.html" '4BAE5C+EFRFW2+5VHC+5YJRM'
           check_until_ready "$base/instrument-assessment-check.html" "$tmp/assessment.html" 'instrument-affiliate-template'
           check_until_ready "$base/smartphone-pc-selling.html" "$tmp/smartphone-pc.html" '4BAEXC+G7GTMA+1SOW+ZQFQA'
+          check_until_ready "$base/smartphone-data-erasure-before-selling.html" "$tmp/smartphone-data.html" '4BAEXC+G7GTMA+1SOW+ZQFQA'
           check_until_ready "$base/smartphone-pc-assessment-check.html" "$tmp/smartphone-pc-check.html" 'スマホ・パソコン買取の査定前チェック'
           check_until_ready "$base/camera-selling.html" "$tmp/camera.html" 'カメラ・レンズを売る前に'
           check_until_ready "$base/books-hobby-selling.html" "$tmp/books-hobby.html" '4BAEXC+G6VE0I+2P0S+BZ0Z6'
+          check_until_ready "$base/figure-purchase-cancellation-check.html" "$tmp/figure-cancel.html" '4BAEXC+G6VE0I+2P0S+BZ0Z6'
           check_until_ready "$base/books-hobby-assessment-check.html" "$tmp/books-hobby-check.html" '本・ゲーム・フィギュア買取の査定前チェック'
           check_until_ready "$base/brand-watch-selling.html" "$tmp/brand-watch.html" 'ブランド品・時計を売る前に'
           check_until_ready "$base/kimono-clothing-selling.html" "$tmp/kimono-clothing.html" '着物・衣類を売る前に'
@@ -68,6 +70,7 @@ jobs:
           check_until_ready "$base/assets/assessment-check.js" "$tmp/assessment.js" "method === 'visit'"
           check_until_ready "$base/assets/category-precheck.js" "$tmp/category-precheck.js" "dataset.level === 'stop'"
           check_until_ready "$base/advertising-policy.html" "$tmp/advertising-policy.html" '現在、一部ページでアフィリエイト広告を利用しています。'
+          check_until_ready "$base/sources.html" "$tmp/sources.html" 'スマートフォンのデータ消去'
           check_until_ready "$base/sitemap.xml" "$tmp/sitemap.xml" 'instrument-assessment-check.html'
 
           unknown_status="$(curl --silent --show-error --location --output "$tmp/unknown.html" --write-out '%{http_code}' "$base/__scheduled_monitor_missing_page__" || true)"
@@ -77,9 +80,11 @@ jobs:
           grep -Fq 'instrument-selling.html' "$tmp/sitemap.xml"
           grep -Fq 'instrument-assessment-check.html' "$tmp/sitemap.xml"
           grep -Fq 'smartphone-pc-selling.html' "$tmp/sitemap.xml"
+          grep -Fq 'smartphone-data-erasure-before-selling.html' "$tmp/sitemap.xml"
           grep -Fq 'smartphone-pc-assessment-check.html' "$tmp/sitemap.xml"
           grep -Fq 'camera-selling.html' "$tmp/sitemap.xml"
           grep -Fq 'books-hobby-selling.html' "$tmp/sitemap.xml"
+          grep -Fq 'figure-purchase-cancellation-check.html' "$tmp/sitemap.xml"
           grep -Fq 'books-hobby-assessment-check.html' "$tmp/sitemap.xml"
           grep -Fq 'brand-watch-selling.html' "$tmp/sitemap.xml"
           grep -Fq 'kimono-clothing-selling.html' "$tmp/sitemap.xml"
@@ -87,7 +92,9 @@ jobs:
           grep -Fq 'home-purchase.html' "$tmp/sitemap.xml"
           grep -Fq '広告・PRについて' "$tmp/assessment.html"
           grep -Fq 'smartphone-pc-assessment-check.html' "$tmp/smartphone-pc.html"
+          grep -Fq 'smartphone-data-erasure-before-selling.html' "$tmp/smartphone-pc.html"
           grep -Fq 'books-hobby-assessment-check.html' "$tmp/books-hobby.html"
+          grep -Fq 'figure-purchase-cancellation-check.html' "$tmp/books-hobby.html"
           grep -Fq 'kimono-clothing-assessment-check.html' "$tmp/kimono-clothing.html"
           grep -Fq 'smartphone-pc-selling.html' "$tmp/smartphone-pc-check.html"
           grep -Fq 'books-hobby-selling.html' "$tmp/books-hobby-check.html"
@@ -109,11 +116,24 @@ jobs:
           grep -Fq '4BAE5D+5FVMSY+56WW+5YRHE' "$tmp/brand-watch.html"
           grep -Fq 'https://px.a8.net/svt/ejp?a8mat=4BAEXC+G7GTMA+1SOW+ZQFQA' "$tmp/smartphone-pc.html"
           grep -Fq 'https://www12.a8.net/0.gif?a8mat=4BAEXC+G7GTMA+1SOW+ZQFQA' "$tmp/smartphone-pc.html"
+          grep -Fq 'https://px.a8.net/svt/ejp?a8mat=4BAEXC+G7GTMA+1SOW+ZQFQA' "$tmp/smartphone-data.html"
+          grep -Fq 'https://www12.a8.net/0.gif?a8mat=4BAEXC+G7GTMA+1SOW+ZQFQA' "$tmp/smartphone-data.html"
+          grep -Fq 'smartphone-pc-selling.html' "$tmp/smartphone-data.html"
           grep -Fq 'https://px.a8.net/svt/ejp?a8mat=4BAEXC+G6VE0I+2P0S+BZ0Z6' "$tmp/books-hobby.html"
           grep -Fq 'https://www14.a8.net/0.gif?a8mat=4BAEXC+G6VE0I+2P0S+BZ0Z6' "$tmp/books-hobby.html"
+          grep -Fq 'https://px.a8.net/svt/ejp?a8mat=4BAEXC+G6VE0I+2P0S+BZ0Z6' "$tmp/figure-cancel.html"
+          grep -Fq 'https://www14.a8.net/0.gif?a8mat=4BAEXC+G6VE0I+2P0S+BZ0Z6' "$tmp/figure-cancel.html"
+          grep -Fq 'books-hobby-selling.html' "$tmp/figure-cancel.html"
           grep -Fq '広告・PRについて' "$tmp/smartphone-pc.html"
           grep -Fq '広告・PRについて' "$tmp/books-hobby.html"
-          if grep -Eq 'tel:' "$tmp/smartphone-pc.html" "$tmp/books-hobby.html"; then
+          grep -Fq '広告・PRについて' "$tmp/smartphone-data.html"
+          grep -Fq '広告・PRについて' "$tmp/figure-cancel.html"
+          grep -Fq 'https://support.apple.com/ja-jp/109511' "$tmp/smartphone-data.html"
+          grep -Fq 'https://support.google.com/android/answer/6088915?hl=ja' "$tmp/smartphone-data.html"
+          grep -Fq 'https://figurekaitori.net/faq/' "$tmp/figure-cancel.html"
+          grep -Fq 'https://support.apple.com/ja-jp/109511' "$tmp/sources.html"
+          grep -Fq 'https://figurekaitori.net/faq/' "$tmp/sources.html"
+          if grep -Eq 'tel:' "$tmp/smartphone-pc.html" "$tmp/books-hobby.html" "$tmp/smartphone-data.html" "$tmp/figure-cancel.html"; then
             echo 'ERROR: telephone link found on new affiliate guide' >&2
             exit 1
           fi
