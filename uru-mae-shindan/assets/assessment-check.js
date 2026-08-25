@@ -7,7 +7,10 @@
   const summary = document.getElementById('assessment-result-summary');
   const reasons = document.getElementById('assessment-result-reasons');
   const error = document.getElementById('assessment-error');
-  if (!form || !result || !title || !summary || !reasons || !error) return;
+  const affiliateOffer = document.getElementById('instrument-affiliate-offer');
+  const affiliateTemplate = document.getElementById('instrument-affiliate-template');
+  const affiliateLink = document.getElementById('instrument-affiliate-link');
+  if (!form || !result || !title || !summary || !reasons || !error || !affiliateOffer || !affiliateTemplate || !affiliateLink) return;
 
   const requiredNames = ['history', 'item', 'region', 'eligibleItem', 'deadline', 'method'];
 
@@ -20,6 +23,8 @@
     error.hidden = !missing;
     if (missing) {
       result.hidden = true;
+      affiliateOffer.hidden = true;
+      affiliateLink.replaceChildren();
       error.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
     }
@@ -90,6 +95,14 @@
       li.textContent = text;
       return li;
     }));
+
+    const showAffiliateOffer = blockers.length === 0 && warnings.length === 0 && method === 'visit';
+    affiliateOffer.hidden = !showAffiliateOffer;
+    if (showAffiliateOffer) {
+      if (!affiliateLink.hasChildNodes()) affiliateLink.append(affiliateTemplate.content.cloneNode(true));
+    } else {
+      affiliateLink.replaceChildren();
+    }
     result.hidden = false;
     result.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
@@ -101,6 +114,8 @@
       title.textContent = '';
       summary.textContent = '';
       reasons.replaceChildren();
+      affiliateOffer.hidden = true;
+      affiliateLink.replaceChildren();
     }, 0);
   });
 })();
