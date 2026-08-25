@@ -48,7 +48,7 @@ jobs:
             local file="$1"
             grep -Fq '現在、このページには広告・アフィリエイトリンクを掲載していません' "$file"
             if grep -Eq 'a8mat=|px[.]a8[.]net|www[0-9]+[.]a8[.]net/0[.]gif|tel:' "$file"; then
-              echo "ERROR: affiliate or telephone marker found in pending-category page: $file" >&2
+              echo "ERROR: affiliate or telephone marker found in expected ad-free page: $file" >&2
               return 1
             fi
           }
@@ -64,6 +64,7 @@ jobs:
           check_until_ready "$base/brand-watch-selling.html" "$tmp/brand-watch.html" 'ブランド品・時計を売る前に'
           check_until_ready "$base/kimono-clothing-selling.html" "$tmp/kimono-clothing.html" '着物・衣類を売る前に'
           check_until_ready "$base/kimono-clothing-assessment-check.html" "$tmp/kimono-clothing-check.html" '着物・衣類買取の査定前チェック'
+          check_until_ready "$base/home-purchase.html" "$tmp/home-purchase.html" '申込み前に確認する8項目'
           check_until_ready "$base/assets/assessment-check.js" "$tmp/assessment.js" "method === 'visit'"
           check_until_ready "$base/assets/category-precheck.js" "$tmp/category-precheck.js" "dataset.level === 'stop'"
           check_until_ready "$base/advertising-policy.html" "$tmp/advertising-policy.html" '現在、一部ページでアフィリエイト広告を利用しています。'
@@ -83,6 +84,7 @@ jobs:
           grep -Fq 'brand-watch-selling.html' "$tmp/sitemap.xml"
           grep -Fq 'kimono-clothing-selling.html' "$tmp/sitemap.xml"
           grep -Fq 'kimono-clothing-assessment-check.html' "$tmp/sitemap.xml"
+          grep -Fq 'home-purchase.html' "$tmp/sitemap.xml"
           grep -Fq '広告・PRについて' "$tmp/assessment.html"
           grep -Fq 'smartphone-pc-assessment-check.html' "$tmp/smartphone-pc.html"
           grep -Fq 'books-hobby-assessment-check.html' "$tmp/books-hobby.html"
@@ -96,6 +98,8 @@ jobs:
           assert_no_affiliate "$tmp/books-hobby-check.html"
           assert_no_affiliate "$tmp/kimono-clothing.html"
           assert_no_affiliate "$tmp/kimono-clothing-check.html"
+          assert_no_affiliate "$tmp/home-purchase.html"
+          grep -Fq 'https://www.kokusen.go.jp/t_box/data/t_box-faq_qa2016_13.html' "$tmp/home-purchase.html"
           if grep -Eq 'fetch[(]|XMLHttpRequest|sendBeacon' "$tmp/category-precheck.js"; then
             echo 'ERROR: category precheck script contains an external-send API' >&2
             exit 1
