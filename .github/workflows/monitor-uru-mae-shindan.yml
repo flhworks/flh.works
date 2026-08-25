@@ -47,6 +47,11 @@ jobs:
           check_until_ready "$base/" "$tmp/index.html" '売る前診断'
           check_until_ready "$base/instrument-selling.html" "$tmp/instrument.html" '楽器・機材を売る前に'
           check_until_ready "$base/instrument-assessment-check.html" "$tmp/assessment.html" '楽器買取の無料査定前チェック'
+          check_until_ready "$base/smartphone-pc-selling.html" "$tmp/smartphone-pc.html" 'スマートフォン・パソコンを売る前に'
+          check_until_ready "$base/camera-selling.html" "$tmp/camera.html" 'カメラ・レンズを売る前に'
+          check_until_ready "$base/books-hobby-selling.html" "$tmp/books-hobby.html" '本・ゲーム・ホビーを売る前に'
+          check_until_ready "$base/brand-watch-selling.html" "$tmp/brand-watch.html" 'ブランド品・時計を売る前に'
+          check_until_ready "$base/kimono-clothing-selling.html" "$tmp/kimono-clothing.html" '着物・衣類を売る前に'
           check_until_ready "$base/assets/assessment-check.js" "$tmp/assessment.js" 'new FormData(form)'
           check_until_ready "$base/sitemap.xml" "$tmp/sitemap.xml" 'instrument-assessment-check.html'
 
@@ -56,6 +61,16 @@ jobs:
 
           grep -Fq 'instrument-selling.html' "$tmp/sitemap.xml"
           grep -Fq 'instrument-assessment-check.html' "$tmp/sitemap.xml"
+          grep -Fq 'smartphone-pc-selling.html' "$tmp/sitemap.xml"
+          grep -Fq 'camera-selling.html' "$tmp/sitemap.xml"
+          grep -Fq 'books-hobby-selling.html' "$tmp/sitemap.xml"
+          grep -Fq 'brand-watch-selling.html' "$tmp/sitemap.xml"
+          grep -Fq 'kimono-clothing-selling.html' "$tmp/sitemap.xml"
           grep -Fq '広告について' "$tmp/assessment.html"
+          grep -Fq '現在、このページには広告・アフィリエイトリンクを掲載していません' "$tmp/smartphone-pc.html"
+          grep -Fq '現在、このページには広告・アフィリエイトリンクを掲載していません' "$tmp/camera.html"
+          grep -Fq '現在、このページには広告・アフィリエイトリンクを掲載していません' "$tmp/books-hobby.html"
+          grep -Fq '現在、このページには広告・アフィリエイトリンクを掲載していません' "$tmp/brand-watch.html"
+          grep -Fq '現在、このページには広告・アフィリエイトリンクを掲載していません' "$tmp/kimono-clothing.html"
 
           echo 'URU_MAE_SHINDAN_MONITOR=PASS'
