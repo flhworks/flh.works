@@ -45,14 +45,14 @@ jobs:
           }
 
           check_until_ready "$base/" "$tmp/index.html" '売る前診断'
-          check_until_ready "$base/instrument-selling.html" "$tmp/instrument.html" '楽器・機材を売る前に'
+          check_until_ready "$base/instrument-selling.html" "$tmp/instrument.html" '4BAE5C+EFRFW2+5VHC+5YJRM'
           check_until_ready "$base/instrument-assessment-check.html" "$tmp/assessment.html" 'instrument-affiliate-template'
           check_until_ready "$base/smartphone-pc-selling.html" "$tmp/smartphone-pc.html" 'スマートフォン・パソコンを売る前に'
           check_until_ready "$base/camera-selling.html" "$tmp/camera.html" 'カメラ・レンズを売る前に'
           check_until_ready "$base/books-hobby-selling.html" "$tmp/books-hobby.html" '本・ゲーム・ホビーを売る前に'
           check_until_ready "$base/brand-watch-selling.html" "$tmp/brand-watch.html" 'ブランド品・時計を売る前に'
           check_until_ready "$base/kimono-clothing-selling.html" "$tmp/kimono-clothing.html" '着物・衣類を売る前に'
-          check_until_ready "$base/assets/assessment-check.js" "$tmp/assessment.js" 'new FormData(form)'
+          check_until_ready "$base/assets/assessment-check.js" "$tmp/assessment.js" "method === 'visit'"
           check_until_ready "$base/advertising-policy.html" "$tmp/advertising-policy.html" '現在、一部ページでアフィリエイト広告を利用しています。'
           check_until_ready "$base/sitemap.xml" "$tmp/sitemap.xml" 'instrument-assessment-check.html'
 
