@@ -56,10 +56,10 @@ jobs:
           check_until_ready "$base/" "$tmp/index.html" '売る前診断'
           check_until_ready "$base/instrument-selling.html" "$tmp/instrument.html" '4BAE5C+EFRFW2+5VHC+5YJRM'
           check_until_ready "$base/instrument-assessment-check.html" "$tmp/assessment.html" 'instrument-affiliate-template'
-          check_until_ready "$base/smartphone-pc-selling.html" "$tmp/smartphone-pc.html" 'スマートフォン・パソコンを売る前に'
+          check_until_ready "$base/smartphone-pc-selling.html" "$tmp/smartphone-pc.html" '4BAEXC+G7GTMA+1SOW+ZQFQA'
           check_until_ready "$base/smartphone-pc-assessment-check.html" "$tmp/smartphone-pc-check.html" 'スマホ・パソコン買取の査定前チェック'
           check_until_ready "$base/camera-selling.html" "$tmp/camera.html" 'カメラ・レンズを売る前に'
-          check_until_ready "$base/books-hobby-selling.html" "$tmp/books-hobby.html" '本・ゲーム・ホビーを売る前に'
+          check_until_ready "$base/books-hobby-selling.html" "$tmp/books-hobby.html" '4BAEXC+G6VE0I+2P0S+BZ0Z6'
           check_until_ready "$base/books-hobby-assessment-check.html" "$tmp/books-hobby-check.html" '本・ゲーム・フィギュア買取の査定前チェック'
           check_until_ready "$base/brand-watch-selling.html" "$tmp/brand-watch.html" 'ブランド品・時計を売る前に'
           check_until_ready "$base/kimono-clothing-selling.html" "$tmp/kimono-clothing.html" '着物・衣類を売る前に'
@@ -92,9 +92,7 @@ jobs:
           grep -Fq 'smartphone-pc-selling.html' "$tmp/smartphone-pc-check.html"
           grep -Fq 'books-hobby-selling.html' "$tmp/books-hobby-check.html"
           grep -Fq 'kimono-clothing-selling.html' "$tmp/kimono-clothing-check.html"
-          assert_no_affiliate "$tmp/smartphone-pc.html"
           assert_no_affiliate "$tmp/smartphone-pc-check.html"
-          assert_no_affiliate "$tmp/books-hobby.html"
           assert_no_affiliate "$tmp/books-hobby-check.html"
           assert_no_affiliate "$tmp/kimono-clothing.html"
           assert_no_affiliate "$tmp/kimono-clothing-check.html"
@@ -109,5 +107,15 @@ jobs:
           grep -Fq "method === 'visit'" "$tmp/assessment.js"
           grep -Fq '4BAE5D+5E3BZM+35HU+1THW9E' "$tmp/camera.html"
           grep -Fq '4BAE5D+5FVMSY+56WW+5YRHE' "$tmp/brand-watch.html"
+          grep -Fq 'https://px.a8.net/svt/ejp?a8mat=4BAEXC+G7GTMA+1SOW+ZQFQA' "$tmp/smartphone-pc.html"
+          grep -Fq 'https://www12.a8.net/0.gif?a8mat=4BAEXC+G7GTMA+1SOW+ZQFQA' "$tmp/smartphone-pc.html"
+          grep -Fq 'https://px.a8.net/svt/ejp?a8mat=4BAEXC+G6VE0I+2P0S+BZ0Z6' "$tmp/books-hobby.html"
+          grep -Fq 'https://www14.a8.net/0.gif?a8mat=4BAEXC+G6VE0I+2P0S+BZ0Z6' "$tmp/books-hobby.html"
+          grep -Fq '広告・PRについて' "$tmp/smartphone-pc.html"
+          grep -Fq '広告・PRについて' "$tmp/books-hobby.html"
+          if grep -Eq 'tel:' "$tmp/smartphone-pc.html" "$tmp/books-hobby.html"; then
+            echo 'ERROR: telephone link found on new affiliate guide' >&2
+            exit 1
+          fi
 
           echo 'URU_MAE_SHINDAN_MONITOR=PASS'
