@@ -7,6 +7,7 @@ on:
     paths:
       - 'uru-mae-shindan/**'
       - '.github/workflows/monitor-uru-mae-shindan.yml'
+      - '.github/scripts/check-uru-mae-shindan-seo.mjs'
   schedule:
     - cron: '17 21 * * 1'
   workflow_dispatch:
@@ -19,6 +20,12 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 8
     steps:
+      - name: Check out current source
+        uses: actions/checkout@v4
+
+      - name: Run static SEO regression checks
+        run: node .github/scripts/check-uru-mae-shindan-seo.mjs
+
       - name: Check public pages and discovery files
         shell: bash
         run: |
@@ -53,7 +60,13 @@ jobs:
             fi
           }
 
-          check_until_ready "$base/" "$tmp/index.html" '売る前診断'
+          check_until_ready "$base/" "$tmp/index.html" '売却方法を無料診断｜フリマ・宅配・出張・店頭買取を比較｜売る前診断'
+          check_until_ready "$base/compare.html" "$tmp/compare.html" 'フリマ・宅配買取・出張買取・店頭買取を比較'
+          check_until_ready "$base/about.html" "$tmp/about.html" 'https://flhworks.github.io/flh.works/uru-mae-shindan/about.html'
+          check_until_ready "$base/editorial-policy.html" "$tmp/editorial-policy.html" 'https://flhworks.github.io/flh.works/uru-mae-shindan/editorial-policy.html'
+          check_until_ready "$base/flea-profit.html" "$tmp/flea-profit.html" 'https://flhworks.github.io/flh.works/uru-mae-shindan/flea-profit.html'
+          check_until_ready "$base/store-purchase.html" "$tmp/store-purchase.html" 'https://flhworks.github.io/flh.works/uru-mae-shindan/store-purchase.html'
+          check_until_ready "$base/visit-purchase.html" "$tmp/visit-purchase.html" 'https://flhworks.github.io/flh.works/uru-mae-shindan/visit-purchase.html'
           check_until_ready "$base/instrument-selling.html" "$tmp/instrument.html" '4BAE5C+EFRFW2+5VHC+5YJRM'
           check_until_ready "$base/instrument-assessment-check.html" "$tmp/assessment.html" 'instrument-affiliate-template'
           check_until_ready "$base/smartphone-pc-selling.html" "$tmp/smartphone-pc.html" 'smartphone-data-erasure-before-selling.html'
@@ -73,10 +86,14 @@ jobs:
           check_until_ready "$base/privacy.html" "$tmp/privacy.html" 'A8.netが提供する広告リンクと計測用画像'
           check_until_ready "$base/sources.html" "$tmp/sources.html" 'スマートフォンのデータ消去'
           check_until_ready "$base/sitemap.xml" "$tmp/sitemap.xml" 'instrument-assessment-check.html'
+          check_until_ready "$base/robots.txt" "$tmp/robots.txt" 'Sitemap: https://flhworks.github.io/flh.works/uru-mae-shindan/sitemap.xml'
 
           unknown_status="$(curl --silent --show-error --location --output "$tmp/unknown.html" --write-out '%{http_code}' "$base/__scheduled_monitor_missing_page__" || true)"
           echo "unknown_path_status=${unknown_status}"
           [[ "$unknown_status" == "404" ]]
+
+          grep -Fq '<link href="https://flhworks.github.io/flh.works/uru-mae-shindan/" rel="canonical"' "$tmp/index.html"
+          grep -Fq '<link rel="canonical" href="https://flhworks.github.io/flh.works/uru-mae-shindan/compare.html">' "$tmp/compare.html"
 
           grep -Fq 'instrument-selling.html' "$tmp/sitemap.xml"
           grep -Fq 'instrument-assessment-check.html' "$tmp/sitemap.xml"
