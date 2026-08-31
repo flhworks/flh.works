@@ -3,7 +3,7 @@ import path from 'node:path';
 
 const siteDir = path.resolve('uru-mae-shindan');
 const baseUrl = 'https://flhworks.github.io/flh.works/uru-mae-shindan/';
-const htmlFiles = fs.readdirSync(siteDir).filter((name) => name.endsWith('.html')).sort();
+const htmlFiles = fs.readdirSync(siteDir).filter((name) => name.endsWith('.html') && !/^google[a-z0-9]+\.html$/i.test(name)).sort();
 const indexableFiles = htmlFiles.filter((name) => name !== '404.html');
 const breadcrumbRequired = new Set([
   'instrument-selling.html',
