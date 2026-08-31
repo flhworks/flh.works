@@ -8,7 +8,16 @@
   const reasons = document.getElementById('precheck-result-reasons');
   const error = document.getElementById('precheck-error');
   const submitButton = document.getElementById('precheck-submit');
+  const readyAffiliateOffer = document.querySelector('[data-ready-affiliate-offer]');
+  const readyAffiliateSlot = document.querySelector('[data-ready-affiliate-slot]');
+  const readyAffiliateTemplate = document.querySelector('[data-ready-affiliate-template]');
   if (!form || !result || !title || !summary || !reasons || !error || !submitButton) return;
+
+  const clearReadyAffiliateOffer = () => {
+    if (!readyAffiliateOffer || !readyAffiliateSlot) return;
+    readyAffiliateOffer.hidden = true;
+    readyAffiliateSlot.replaceChildren();
+  };
 
   const questionNames = [...new Set(
     [...form.querySelectorAll('input[type="radio"]')].map((input) => input.name)
@@ -23,6 +32,7 @@
 
     if (missing) {
       result.hidden = true;
+      clearReadyAffiliateOffer();
       error.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
     }
@@ -56,6 +66,18 @@
       return item;
     }));
 
+    if (readyAffiliateOffer && readyAffiliateSlot && readyAffiliateTemplate) {
+      const showReadyAffiliateOffer = stopItems.length === 0 && reviewItems.length === 0;
+      readyAffiliateOffer.hidden = !showReadyAffiliateOffer;
+      if (showReadyAffiliateOffer) {
+        if (!readyAffiliateSlot.hasChildNodes()) {
+          readyAffiliateSlot.append(readyAffiliateTemplate.content.cloneNode(true));
+        }
+      } else {
+        readyAffiliateSlot.replaceChildren();
+      }
+    }
+
     result.hidden = false;
     result.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
@@ -67,6 +89,7 @@
       title.textContent = '';
       summary.textContent = '';
       reasons.replaceChildren();
+      clearReadyAffiliateOffer();
     }, 0);
   });
 })();
