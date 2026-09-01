@@ -76,7 +76,7 @@ jobs:
           check_until_ready "$base/camera-lens-condition-check-before-selling.html" "$tmp/camera.html" 'カメラ・レンズのカビ・曇り・傷を売る前に確認'
           check_until_ready "$base/instrument-operation-check-before-selling.html" "$tmp/instrument.html" 'ギター・アンプ・エフェクターを売る前の動作確認'
           check_until_ready "$base/brand-watch-accessories-repair-history-check.html" "$tmp/brand.html" 'ブランド時計の箱・保証書・余りコマ・修理歴チェック'
-          check_until_ready "$base/figure-box-parts-condition-check.html" "$tmp/figure.html" 'フィギュアの箱・付属品・欠品・状態チェック'
+          check_until_ready "$base/figure-box-parts-condition-check.html" "$tmp/figure.html" 'フィギュアを売る前の箱・付属品・欠品・状態チェック'
 
           check_until_ready "$base/smartphone-pc-selling.html" "$tmp/smartphone-parent.html" 'smartphone-network-restriction-before-selling.html'
           check_until_ready "$base/camera-selling.html" "$tmp/camera-parent.html" 'camera-lens-condition-check-before-selling.html'
