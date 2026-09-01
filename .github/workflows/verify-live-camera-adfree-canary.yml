@@ -1,0 +1,54 @@
+name: Verify live camera ad-free canary
+
+on:
+  push:
+    branches:
+      - aff/camera-condition-adfree-canary-20260902
+    paths:
+      - '.github/workflows/verify-live-camera-adfree-canary.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  verify-live:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - name: Verify live page, parent and sitemap
+        shell: bash
+        run: |
+          set -euo pipefail
+          base='https://flhworks.github.io/flh.works/uru-mae-shindan'
+          tmp="$(mktemp -d)"
+          trap 'rm -rf "$tmp"' EXIT
+
+          fetch_ready() {
+            local url="$1"
+            local file="$2"
+            local marker="$3"
+            local code=''
+            for attempt in $(seq 1 24); do
+              code="$(curl --silent --show-error --location --output "$file" --write-out '%{http_code}' "$url" || true)"
+              echo "attempt=${attempt} url=${url} status=${code}"
+              if [[ "$code" == '200' ]] && grep -Fq "$marker" "$file"; then
+                return 0
+              fi
+              sleep 10
+            done
+            return 1
+          }
+
+          fetch_ready "$base/camera-lens-condition-check-before-selling.html" "$tmp/new.html" 'カメラ・レンズのカビ・曇り・傷を売る前に確認'
+          fetch_ready "$base/camera-selling.html" "$tmp/parent.html" 'camera-lens-condition-check-before-selling.html'
+          fetch_ready "$base/sitemap.xml" "$tmp/sitemap.xml" 'camera-lens-condition-check-before-selling.html'
+          fetch_ready "$base/assets/high-intent.css" "$tmp/high-intent.css" '.fact-table-wrap'
+
+          grep -Fq 'https://flhworks.github.io/flh.works/uru-mae-shindan/camera-lens-condition-check-before-selling.html' "$tmp/new.html"
+          grep -Fq 'index,follow,max-image-preview:large' "$tmp/new.html"
+          ! grep -Eq 'a8mat=|px[.]a8[.]net|www[0-9]+[.]a8[.]net/0[.]gif|非公開候補|noindex' "$tmp/new.html"
+          test "$(grep -Fo 'camera-lens-condition-check-before-selling.html' "$tmp/sitemap.xml" | wc -l)" -eq 1
+          test "$(grep -Fo 'https://px.a8.net/svt/ejp?a8mat=4BAE5D+5E3BZM+35HU+1THW9E' "$tmp/parent.html" | wc -l)" -eq 1
+          test "$(grep -Fo 'https://www11.a8.net/0.gif?a8mat=4BAE5D+5E3BZM+35HU+1THW9E' "$tmp/parent.html" | wc -l)" -eq 1
+
+          echo 'CAMERA_ADFREE_CANARY_LIVE=PASS'
