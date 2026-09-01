@@ -8,8 +8,26 @@
     visit: {name:'出張買取', icon:'🚚'},
     store: {name:'店頭買取', icon:'🏬'}
   };
+  const methodGuides = {
+    flea: {href:'flea-profit.html', label:'フリマの手取りを計算する'},
+    home: {href:'home-purchase.html', label:'宅配買取の条件を確認する'},
+    visit: {href:'visit-purchase.html', label:'出張買取の条件を確認する'},
+    store: {href:'store-purchase.html', label:'店頭買取の条件を確認する'}
+  };
+  const itemGuides = {
+    instrument: {href:'instrument-selling.html', label:'楽器・機材の売却前ガイドへ'},
+    camera: {href:'camera-selling.html', label:'カメラ・レンズの売却前ガイドへ'},
+    brand: {href:'brand-watch-selling.html', label:'ブランド品・時計の売却前ガイドへ'},
+    digital: {href:'smartphone-pc-selling.html', label:'スマホ・パソコンの売却前ガイドへ'},
+    clothes: {href:'kimono-clothing-selling.html', label:'着物・衣類の売却前ガイドへ'},
+    hobby: {href:'books-hobby-selling.html', label:'本・ホビーの売却前ガイドへ'},
+    large: {href:'checklist.html', label:'大型品を含む売却前チェックへ'},
+    mixed: {href:'checklist.html', label:'複数品の売却前チェックへ'}
+  };
   const questions = [
     {key:'item', kicker:'ITEM', title:'何を売りたいですか？', help:'最も近い種類を1つ選んでください。', options:[
+      ['instrument','🎸','楽器・音響・DTM機材','型番、動作、改造、付属品、搬出方法が重要'],
+      ['camera','📷','カメラ・レンズ・撮影機材','マウント、光学状態、動作、付属品が重要'],
       ['brand','👜','ブランド品・時計・貴金属','比較的小さく、状態や真贋の確認が重要'],
       ['digital','📱','スマホ・パソコン・小型家電','初期化・付属品・動作確認が重要'],
       ['clothes','👕','着物・衣類・服飾小物','点数、ブランド、季節、状態で差が出やすい'],
@@ -80,6 +98,8 @@
   function score(){
     const s={flea:0,home:0,visit:0,store:0}; const a=state.answers; const reasons={flea:[],home:[],visit:[],store:[]};
     const add=(m,n,r)=>{s[m]+=n;if(r)reasons[m].push(r)};
+    if(a.item==='instrument'){add('visit',18,'大型品や精密機材は搬出を含む査定と比較しやすい');add('home',13,'梱包できる機材は宅配査定とも比較できる');add('flea',11,'型番や状態を説明できれば個人間販売も検討できる');}
+    if(a.item==='camera'){add('flea',18,'型番や光学状態を写真と説明で伝えやすい');add('home',14,'専門業者の宅配査定とも比較しやすい');add('store',8);}
     if(['brand','digital','hobby'].includes(a.item)){add('flea',18,'商品の特徴を写真と説明で伝えやすい');add('home',11,'専門業者の宅配査定とも比較しやすい');}
     if(a.item==='clothes'){add('home',16,'点数をまとめて送る方法と相性がよい');add('flea',10,'ブランドや状態が明確なら個別販売も検討できる');}
     if(a.item==='large'){add('visit',28,'大型品は搬出を含む方法が現実的');add('store',4);}
@@ -118,7 +138,9 @@
     const reasonList=(reasons[first].slice(0,4).map(x=>`<li>${x}</li>`).join('') || '<li>回答全体から総合的に判定しました</li>');
     const cautionList=caveats[first].map(x=>`<li>${x}</li>`).join('');
     const rows=ranking.map(([key,val],i)=>`<div class="rank-row"><span class="rank-label">第${i+1}候補</span><strong>${methods[key].icon} ${methods[key].name}</strong><div class="score-bar" aria-label="適合度 ${Math.round(val/max*100)}"><span style="width:${Math.round(val/max*100)}%"></span></div></div>`).join('');
-    panel.innerHTML=`<div class="result-hero"><span class="result-label">診断結果</span><h3>第一候補は「${methods[first].name}」</h3><p>${methods[first].name}を軸にしつつ、第二候補の「${methods[second].name}」と実際の手取り・条件を比較するのが合理的です。</p></div><div class="result-body"><div class="result-grid"><div class="info-box"><h4>この方法が向く理由</h4><ul>${reasonList}</ul></div><div class="info-box"><h4>売る前の注意</h4><ul>${cautionList}</ul></div></div><div class="ranking"><h4>候補ルート順位</h4>${rows}</div><div class="callout" style="margin-top:20px"><strong>この結果は価格査定ではありません。</strong><br>実際の販売手数料・送料・査定額・対象地域・キャンセル条件を確認し、最終判断してください。</div><div class="reset-wrap"><button id="reset-diagnosis" class="button button-secondary" type="button">最初からやり直す</button><a class="button button-primary" href="flea-profit.html">フリマ手取りを計算</a></div></div>`;
+    const itemGuide=itemGuides[state.answers.item] || itemGuides.mixed;
+    const methodGuide=methodGuides[first];
+    panel.innerHTML=`<div class="result-hero"><span class="result-label">診断結果</span><h3>第一候補は「${methods[first].name}」</h3><p>${methods[first].name}を軸にしつつ、第二候補の「${methods[second].name}」と実際の手取り・条件を比較するのが合理的です。</p></div><div class="result-body"><div class="result-grid"><div class="info-box"><h4>この方法が向く理由</h4><ul>${reasonList}</ul></div><div class="info-box"><h4>売る前の注意</h4><ul>${cautionList}</ul></div></div><div class="ranking"><h4>候補ルート順位</h4>${rows}</div><div class="callout" style="margin-top:20px"><strong>この結果は価格査定ではありません。</strong><br>実際の販売手数料・送料・査定額・対象地域・キャンセル条件を確認し、最終判断してください。</div><div class="result-next"><strong>次に確認する2項目</strong><p>品目ごとの準備と、第一候補の費用・キャンセル等の条件を分けて確認できます。</p></div><div class="reset-wrap result-actions"><a class="button button-primary" href="${itemGuide.href}">${itemGuide.label}</a><a class="button button-secondary" href="${methodGuide.href}">${methodGuide.label}</a><button id="reset-diagnosis" class="text-button" type="button">最初からやり直す</button></div></div>`;
     qView.style.display='none'; panel.classList.add('is-visible');
     panel.querySelector('#reset-diagnosis').addEventListener('click',()=>{state.index=0;state.answers={};panel.classList.remove('is-visible');panel.innerHTML='';qView.style.display='block';render();qView.scrollIntoView({behavior:'smooth',block:'center'});});
   }
