@@ -1,0 +1,118 @@
+name: Materialize camera ad-free canary
+
+on:
+  push:
+    branches:
+      - aff/camera-condition-adfree-canary-20260902
+    paths:
+      - '.github/workflows/materialize-camera-adfree-canary.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  materialize-and-test:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - name: Check out branch with full history
+        uses: actions/checkout@v4
+        with:
+          ref: aff/camera-condition-adfree-canary-20260902
+          fetch-depth: 0
+
+      - name: Verify exact main baseline
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          test "$(git rev-parse origin/main)" = "1e21099a86da6334d1a560172982e08465b1e4de"
+          test "$(git merge-base HEAD origin/main)" = "1e21099a86da6334d1a560172982e08465b1e4de"
+          test "$(git hash-object uru-mae-shindan/camera-selling.html)" = "e67080031e7d33c7e18e6253c391961bd29c7cac"
+          test "$(git hash-object uru-mae-shindan/sitemap.xml)" = "00062d8c1fa2c3d0d2dbc75fa45e99b3f8bca708"
+          test -f uru-mae-shindan/assets/high-intent.css
+          test -f tmp/camera-adfree-canary-payload.b64
+          test ! -e uru-mae-shindan/camera-lens-condition-check-before-selling.html
+
+      - name: Materialize reviewed page
+        shell: bash
+        run: |
+          set -euo pipefail
+          base64 --decode tmp/camera-adfree-canary-payload.b64 > /tmp/camera-canary.tgz
+          tar -xzf /tmp/camera-canary.tgz -C .
+
+      - name: Connect parent and sitemap transactionally
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+
+          parent = Path('uru-mae-shindan/camera-selling.html')
+          text = parent.read_text(encoding='utf-8')
+          a8_href = 'https://px.a8.net/svt/ejp?a8mat=4BAE5D+5E3BZM+35HU+1THW9E'
+          a8_pixel = 'https://www11.a8.net/0.gif?a8mat=4BAE5D+5E3BZM+35HU+1THW9E'
+          before_href = text.count(a8_href)
+          before_pixel = text.count(a8_pixel)
+          if (before_href, before_pixel) != (1, 1):
+              raise SystemExit(f'A8 marker mismatch before edit: href={before_href} pixel={before_pixel}')
+
+          anchor = '      <h2>買取申込み前に確認すること</h2>'
+          addition = '      <div class="callout callout-blue" data-high-intent-link="camera-lens-condition-check-before-selling.html"><strong>カビ・曇り・傷を無理なく記録</strong><br>見えた状態と未確認事項を分け、分解や強い研磨を避けながら確認する手順を整理しています。<div class="hero-actions"><a class="button button-secondary" href="camera-lens-condition-check-before-selling.html">詳しいチェックを見る</a></div></div>\n\n'
+          if text.count(anchor) != 1 or 'camera-lens-condition-check-before-selling.html' in text:
+              raise SystemExit('parent anchor mismatch or candidate already present')
+          text = text.replace(anchor, addition + anchor, 1)
+          if text.count('"dateModified":"2026-08-25"') != 1:
+              raise SystemExit('parent dateModified anchor mismatch')
+          text = text.replace('"dateModified":"2026-08-25"', '"dateModified":"2026-09-02"', 1)
+          if text.count('情報確認日：2026年8月25日') != 1:
+              raise SystemExit('parent footer date anchor mismatch')
+          text = text.replace('情報確認日：2026年8月25日', '情報確認日：2026年9月2日', 1)
+          if text.count(a8_href) != before_href or text.count(a8_pixel) != before_pixel:
+              raise SystemExit('A8 marker changed by edit')
+          parent.write_text(text, encoding='utf-8')
+
+          sitemap = Path('uru-mae-shindan/sitemap.xml')
+          xml = sitemap.read_text(encoding='utf-8')
+          old = '  <url><loc>https://flhworks.github.io/flh.works/uru-mae-shindan/camera-selling.html</loc><lastmod>2026-08-25</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>\n'
+          new_parent = '  <url><loc>https://flhworks.github.io/flh.works/uru-mae-shindan/camera-selling.html</loc><lastmod>2026-09-02</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>\n'
+          new_page = '  <url><loc>https://flhworks.github.io/flh.works/uru-mae-shindan/camera-lens-condition-check-before-selling.html</loc><lastmod>2026-09-02</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>\n'
+          if xml.count(old) != 1 or 'camera-lens-condition-check-before-selling.html' in xml:
+              raise SystemExit('sitemap anchor mismatch or candidate already present')
+          xml = xml.replace(old, new_parent + new_page, 1)
+          sitemap.write_text(xml, encoding='utf-8')
+          PY
+
+      - name: Run static and SEO checks
+        shell: bash
+        run: |
+          set -euo pipefail
+          page='uru-mae-shindan/camera-lens-condition-check-before-selling.html'
+          parent='uru-mae-shindan/camera-selling.html'
+          sitemap='uru-mae-shindan/sitemap.xml'
+          test -f "$page"
+          grep -Fq 'カメラ・レンズのカビ・曇り・傷を売る前に確認' "$page"
+          grep -Fq 'content="index,follow,max-image-preview:large" name="robots"' "$page"
+          grep -Fq 'https://flhworks.github.io/flh.works/uru-mae-shindan/camera-lens-condition-check-before-selling.html' "$page"
+          ! grep -Eq 'noindex|非公開候補|a8mat=|px[.]a8[.]net|www[0-9]+[.]a8[.]net/0[.]gif' "$page"
+          test "$(grep -Fo 'camera-lens-condition-check-before-selling.html' "$parent" | wc -l)" -eq 2
+          test "$(grep -Fo 'camera-lens-condition-check-before-selling.html' "$sitemap" | wc -l)" -eq 1
+          test "$(grep -Fo 'https://px.a8.net/svt/ejp?a8mat=4BAE5D+5E3BZM+35HU+1THW9E' "$parent" | wc -l)" -eq 1
+          test "$(grep -Fo 'https://www11.a8.net/0.gif?a8mat=4BAE5D+5E3BZM+35HU+1THW9E' "$parent" | wc -l)" -eq 1
+          node .github/scripts/check-uru-mae-shindan-seo.mjs
+          git diff --check
+
+      - name: Commit reviewed candidate files
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -f .github/workflows/materialize-camera-adfree-canary.yml
+          rm -f tmp/camera-adfree-canary-payload.b64
+          rmdir tmp 2>/dev/null || true
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git diff --cached --check
+          git commit -m 'カメラ・レンズの状態確認ページを広告なしで追加'
+          git push origin HEAD:aff/camera-condition-adfree-canary-20260902
