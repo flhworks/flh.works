@@ -1,0 +1,98 @@
+name: Extend smartphone network live monitor
+
+on:
+  push:
+    branches:
+      - aff/monitor-smartphone-network-20260902
+    paths:
+      - '.github/workflows/extend-smartphone-network-monitor.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  extend-and-test:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - name: Check out exact branch
+        uses: actions/checkout@v4
+        with:
+          ref: aff/monitor-smartphone-network-20260902
+          fetch-depth: 0
+
+      - name: Verify current main and monitor baseline
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          test "$(git rev-parse origin/main)" = "1e21099a86da6334d1a560172982e08465b1e4de"
+          test "$(git merge-base HEAD origin/main)" = "1e21099a86da6334d1a560172982e08465b1e4de"
+          test "$(git hash-object .github/workflows/monitor-uru-mae-shindan.yml)" = "abde559df85e157271b828acf16b884a90359e01"
+
+      - name: Add permanent live checks
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('.github/workflows/monitor-uru-mae-shindan.yml')
+          text = path.read_text(encoding='utf-8')
+
+          additions = [
+              (
+                  '          check_until_ready "$base/smartphone-data-erasure-before-selling.html" "$tmp/smartphone-data.html" \'4BAEXC+G7GTMA+1SOW+ZQFQA\'\n',
+                  '          check_until_ready "$base/smartphone-network-restriction-before-selling.html" "$tmp/smartphone-network.html" \'スマホを売る前のIMEI・残債・ネットワーク利用制限チェック\'\n'
+                  '          check_until_ready "$base/assets/high-intent.css" "$tmp/high-intent.css" \'.fact-table-wrap\'\n'
+              ),
+              (
+                  "          grep -Fq 'smartphone-data-erasure-before-selling.html' \"$tmp/sitemap.xml\"\n",
+                  "          grep -Fq 'smartphone-network-restriction-before-selling.html' \"$tmp/sitemap.xml\"\n"
+              ),
+              (
+                  "          grep -Fq 'smartphone-data-erasure-before-selling.html' \"$tmp/smartphone-pc.html\"\n",
+                  "          grep -Fq 'smartphone-network-restriction-before-selling.html' \"$tmp/smartphone-pc.html\"\n"
+              ),
+              (
+                  "          grep -Fq 'smartphone-pc-selling.html' \"$tmp/smartphone-data.html\"\n",
+                  "          grep -Fq 'smartphone-pc-selling.html' \"$tmp/smartphone-network.html\"\n"
+                  "          grep -Fq '<link href=\"https://flhworks.github.io/flh.works/uru-mae-shindan/smartphone-network-restriction-before-selling.html\" rel=\"canonical\"' \"$tmp/smartphone-network.html\"\n"
+                  "          if grep -Eq 'a8mat=|px[.]a8[.]net|www[0-9]+[.]a8[.]net/0[.]gif|tel:' \"$tmp/smartphone-network.html\"; then\n"
+                  "            echo 'ERROR: affiliate or telephone marker found on ad-free smartphone network page' >&2\n"
+                  "            exit 1\n"
+                  "          fi\n"
+              ),
+          ]
+
+          for anchor, addition in additions:
+              if addition.strip() in text:
+                  raise SystemExit('candidate monitor lines already present')
+              if text.count(anchor) != 1:
+                  raise SystemExit(f'anchor count mismatch: {anchor!r}')
+              text = text.replace(anchor, anchor + addition, 1)
+
+          path.write_text(text, encoding='utf-8')
+          PY
+
+      - name: Validate modified monitor and current site source
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -Fq 'smartphone-network-restriction-before-selling.html' .github/workflows/monitor-uru-mae-shindan.yml
+          grep -Fq 'high-intent.css' .github/workflows/monitor-uru-mae-shindan.yml
+          node .github/scripts/check-uru-mae-shindan-seo.mjs
+          git diff --check
+
+      - name: Commit permanent monitor change
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -f .github/workflows/extend-smartphone-network-monitor.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git diff --cached --check
+          git commit -m 'スマホ高意図ページを本番監視へ追加'
+          git push origin HEAD:aff/monitor-smartphone-network-20260902
