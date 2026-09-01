@@ -1,0 +1,114 @@
+name: Monitor 売る前診断 high-intent pages
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'uru-mae-shindan/smartphone-network-restriction-before-selling.html'
+      - 'uru-mae-shindan/camera-lens-condition-check-before-selling.html'
+      - 'uru-mae-shindan/instrument-operation-check-before-selling.html'
+      - 'uru-mae-shindan/brand-watch-accessories-repair-history-check.html'
+      - 'uru-mae-shindan/figure-box-parts-condition-check.html'
+      - 'uru-mae-shindan/smartphone-pc-selling.html'
+      - 'uru-mae-shindan/camera-selling.html'
+      - 'uru-mae-shindan/instrument-selling.html'
+      - 'uru-mae-shindan/brand-watch-selling.html'
+      - 'uru-mae-shindan/figure-purchase-cancellation-check.html'
+      - 'uru-mae-shindan/sitemap.xml'
+      - '.github/workflows/monitor-uru-mae-shindan-high-intent.yml'
+  schedule:
+    - cron: '37 21 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  monitor-high-intent-pages:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - name: Check out current source
+        uses: actions/checkout@v4
+
+      - name: Run static SEO regression checks
+        run: node .github/scripts/check-uru-mae-shindan-seo.mjs
+
+      - name: Check five live pages and parent boundaries
+        shell: bash
+        run: |
+          set -euo pipefail
+          base='https://flhworks.github.io/flh.works/uru-mae-shindan'
+          tmp="$(mktemp -d)"
+          trap 'rm -rf "$tmp"' EXIT
+
+          check_until_ready() {
+            local url="$1"
+            local output="$2"
+            local marker="$3"
+            local status=''
+            for attempt in $(seq 1 24); do
+              status="$(curl --silent --show-error --location --max-time 30 --output "$output" --write-out '%{http_code}' "$url" || true)"
+              echo "attempt=${attempt} url=${url} status=${status}"
+              if [[ "$status" == '200' ]] && grep -Fq "$marker" "$output"; then
+                return 0
+              fi
+              sleep 10
+            done
+            echo "ERROR: ${url} did not return expected content" >&2
+            return 1
+          }
+
+          assert_ad_free_indexable() {
+            local file="$1"
+            local canonical="$2"
+            grep -Fq 'index,follow,max-image-preview:large' "$file"
+            grep -Fq "$canonical" "$file"
+            grep -Fq 'このページにはアフィリエイト広告を掲載していません' "$file"
+            if grep -Eq 'noindex|非公開候補|a8mat=|px[.]a8[.]net|www[0-9]+[.]a8[.]net/0[.]gif|tel:' "$file"; then
+              echo "ERROR: forbidden marker found in ad-free page: $file" >&2
+              return 1
+            fi
+          }
+
+          check_until_ready "$base/smartphone-network-restriction-before-selling.html" "$tmp/smartphone.html" 'スマホを売る前のIMEI・残債・ネットワーク利用制限チェック'
+          check_until_ready "$base/camera-lens-condition-check-before-selling.html" "$tmp/camera.html" 'カメラ・レンズのカビ・曇り・傷を売る前に確認'
+          check_until_ready "$base/instrument-operation-check-before-selling.html" "$tmp/instrument.html" 'ギター・アンプ・エフェクターを売る前の動作確認'
+          check_until_ready "$base/brand-watch-accessories-repair-history-check.html" "$tmp/brand.html" 'ブランド時計の箱・保証書・余りコマ・修理歴チェック'
+          check_until_ready "$base/figure-box-parts-condition-check.html" "$tmp/figure.html" 'フィギュアの箱・付属品・欠品・状態チェック'
+
+          check_until_ready "$base/smartphone-pc-selling.html" "$tmp/smartphone-parent.html" 'smartphone-network-restriction-before-selling.html'
+          check_until_ready "$base/camera-selling.html" "$tmp/camera-parent.html" 'camera-lens-condition-check-before-selling.html'
+          check_until_ready "$base/instrument-selling.html" "$tmp/instrument-parent.html" 'instrument-operation-check-before-selling.html'
+          check_until_ready "$base/brand-watch-selling.html" "$tmp/brand-parent.html" 'brand-watch-accessories-repair-history-check.html'
+          check_until_ready "$base/figure-purchase-cancellation-check.html" "$tmp/figure-parent.html" 'figure-box-parts-condition-check.html'
+          check_until_ready "$base/sitemap.xml" "$tmp/sitemap.xml" 'figure-box-parts-condition-check.html'
+
+          assert_ad_free_indexable "$tmp/smartphone.html" "$base/smartphone-network-restriction-before-selling.html"
+          assert_ad_free_indexable "$tmp/camera.html" "$base/camera-lens-condition-check-before-selling.html"
+          assert_ad_free_indexable "$tmp/instrument.html" "$base/instrument-operation-check-before-selling.html"
+          assert_ad_free_indexable "$tmp/brand.html" "$base/brand-watch-accessories-repair-history-check.html"
+          assert_ad_free_indexable "$tmp/figure.html" "$base/figure-box-parts-condition-check.html"
+
+          test "$(grep -Fo 'https://px.a8.net/svt/ejp?a8mat=4BAEXC+G7GTMA+1SOW+ZQFQA' "$tmp/smartphone-parent.html" | wc -l)" -eq 1
+          test "$(grep -Fo 'https://www12.a8.net/0.gif?a8mat=4BAEXC+G7GTMA+1SOW+ZQFQA' "$tmp/smartphone-parent.html" | wc -l)" -eq 1
+          test "$(grep -Fo 'https://px.a8.net/svt/ejp?a8mat=4BAE5D+5E3BZM+35HU+1THW9E' "$tmp/camera-parent.html" | wc -l)" -eq 1
+          test "$(grep -Fo 'https://www11.a8.net/0.gif?a8mat=4BAE5D+5E3BZM+35HU+1THW9E' "$tmp/camera-parent.html" | wc -l)" -eq 1
+          test "$(grep -Fo 'https://px.a8.net/svt/ejp?a8mat=4BAE5C+EFRFW2+5VHC+5YJRM' "$tmp/instrument-parent.html" | wc -l)" -eq 1
+          test "$(grep -Fo 'https://www18.a8.net/0.gif?a8mat=4BAE5C+EFRFW2+5VHC+5YJRM' "$tmp/instrument-parent.html" | wc -l)" -eq 1
+          test "$(grep -Fo 'https://px.a8.net/svt/ejp?a8mat=4BAE5D+5FVMSY+56WW+5YRHE' "$tmp/brand-parent.html" | wc -l)" -eq 1
+          test "$(grep -Fo 'https://www15.a8.net/0.gif?a8mat=4BAE5D+5FVMSY+56WW+5YRHE' "$tmp/brand-parent.html" | wc -l)" -eq 1
+          test "$(grep -Fo 'https://px.a8.net/svt/ejp?a8mat=4BAEXC+G6VE0I+2P0S+BZ0Z6' "$tmp/figure-parent.html" | wc -l)" -eq 1
+          test "$(grep -Fo 'https://www14.a8.net/0.gif?a8mat=4BAEXC+G6VE0I+2P0S+BZ0Z6' "$tmp/figure-parent.html" | wc -l)" -eq 1
+
+          for slug in \
+            smartphone-network-restriction-before-selling.html \
+            camera-lens-condition-check-before-selling.html \
+            instrument-operation-check-before-selling.html \
+            brand-watch-accessories-repair-history-check.html \
+            figure-box-parts-condition-check.html; do
+            test "$(grep -Fo "$slug" "$tmp/sitemap.xml" | wc -l)" -eq 1
+          done
+
+          echo 'URU_MAE_SHINDAN_HIGH_INTENT_MONITOR=PASS'
